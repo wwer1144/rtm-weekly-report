@@ -33,6 +33,7 @@
        =============================== */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { height: 100%; }
+    html { scroll-behavior: smooth; } /* 부드러운 스크롤 */
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
@@ -274,6 +275,7 @@
       color: var(--neon-purple);
       text-shadow: var(--glow-purple);
       white-space: nowrap;
+      cursor: pointer;
     }
 
     /* ===============================
@@ -388,7 +390,7 @@
     }
 
     /* ===============================
-       BUTTONS (네온 강화)
+       BUTTONS
        =============================== */
     .btn-row {
       margin-top: 14px;
@@ -592,11 +594,11 @@
       </ul>
 
       <div class="pill-list">
-        <div class="pill">출결 현황</div>
-        <div class="pill">단원별 진도</div>
-        <div class="pill">숙제 수행률</div>
-        <div class="pill">테스트 결과</div>
-        <div class="pill">담임 종합 코멘트</div>
+        <a href="#sec-attendance" class="pill">출결 현황</a>
+        <a href="#sec-progress" class="pill">단원별 진도</a>
+        <a href="#sec-homework" class="pill">숙제 수행률</a>
+        <a href="#sec-test" class="pill">테스트 결과</a>
+        <a href="#sec-comment" class="pill">담임 종합 코멘트</a>
       </div>
     </section>
 
@@ -681,16 +683,16 @@
           2025년 11월 3주차 · 고2 ○○○ 학생 · 과목: 수학
         </div>
 
-        <h4>1. 출결 현황</h4>
+        <h4 id="sec-attendance">1. 출결 현황</h4>
         <p>
           · 이번 주 수업일: 3회<br/>
           · 결석 0회 / 지각 0회 / 조퇴 0회<br/>
-          · 수업 태도: 매우 좋음 (수업 내내 집중력이 좋고, 모르는 부분은 바로 질문하는 편입니다.)
+          · 수업 태도: 매우 좋음 (수업 내내 집중력이 좋고, 모르는 부분을 바로 질문하는 편입니다.)
         </p>
 
         <div class="sample-divider"></div>
 
-        <h4>2. 단원별 진도</h4>
+        <h4 id="sec-progress">2. 단원별 진도</h4>
         <p>
           · 학습 단원: 수1 3단원 삼각함수<br/>
           · 상세 진도: 3.1~3.3(삼각함수의 그래프, 주기·진폭) 개념 정리 및 유형별 문제 풀이<br/>
@@ -699,7 +701,7 @@
 
         <div class="sample-divider"></div>
 
-        <h4>3. 숙제 수행률</h4>
+        <h4 id="sec-homework">3. 숙제 수행률</h4>
         <p>
           · 숙제 분량: 연습모드 p.45~52, 총 32문제<br/>
           · 제출 여부: 제시간 제출<br/>
@@ -710,7 +712,7 @@
 
         <div class="sample-divider"></div>
 
-        <h4>4. 테스트 결과</h4>
+        <h4 id="sec-test">4. 테스트 결과</h4>
         <p>
           · 테스트 종류: 삼각함수 소단원 테스트<br/>
           · 시험 일자: 2025-11-14<br/>
@@ -721,7 +723,7 @@
 
         <div class="sample-divider"></div>
 
-        <h4>5. 담임 종합 코멘트</h4>
+        <h4 id="sec-comment">5. 담임 종합 코멘트</h4>
         <p>
           ① <strong>잘한 점</strong><br/>
           · 수업 태도가 안정적이고, 모르는 부분을 바로 질문하려는 태도가 매우 좋습니다.<br/><br/>
