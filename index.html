@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>RTM 주간 학습 보고서 안내</title>
+  <title>RTM 주간 학습 보고서</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <style>
@@ -86,7 +86,7 @@
     }
 
     h1 {
-      font-size: 28px;
+      font-size: 26px;
       margin-bottom: 6px;
       font-weight: 900;
       letter-spacing: -0.02em;
@@ -94,10 +94,10 @@
     }
 
     .slogan-main {
-      font-size: 16px;
+      font-size: 14px;
       margin-bottom: 10px;
       text-transform: uppercase;
-      letter-spacing: 0.32em;
+      letter-spacing: 0.26em;
       color: var(--secondary);
     }
 
@@ -109,6 +109,17 @@
     .highlight {
       color: var(--primary);
       font-weight: 700;
+    }
+
+    .meta-line {
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--text-sub);
+    }
+
+    .meta-line span {
+      font-weight: 600;
+      color: #111827;
     }
 
     .speedline-header {
@@ -252,6 +263,47 @@
       border: 1px dashed #38bdf8;
     }
 
+    /* SAMPLE REPORT BOX */
+    .sample-page {
+      max-width: 720px;
+      margin: 0 auto;
+      background: var(--sky);
+      padding: 18px 16px 20px;
+      border-radius: 14px;
+      border: 1px solid var(--sky-border);
+      box-shadow: 0 10px 22px rgba(15,23,42,0.08);
+      color: #111827;
+    }
+
+    .sample-page h3 {
+      font-size: 20px;
+      margin-bottom: 4px;
+      color: #111827;
+    }
+
+    .sample-meta {
+      font-size: 13px;
+      color: #4b5563;
+      margin-bottom: 14px;
+    }
+
+    .sample-page h4 {
+      font-size: 15px;
+      margin-top: 12px;
+      margin-bottom: 6px;
+      color: #0f766e;
+    }
+
+    .sample-page p {
+      font-size: 14px;
+      color: #111827;
+    }
+
+    .sample-divider {
+      margin: 12px 0;
+      border-top: 1px dashed #9ca3af;
+    }
+
     /* FAQ */
     .faq-item + .faq-item {
       margin-top: 10px;
@@ -271,7 +323,7 @@
       font-size: 13px;
     }
 
-    /* CONTACT BLOCK */
+    /* CONTACT */
     .contact-block {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -324,7 +376,6 @@
       font-size: 15px;
     }
 
-    /* 둘 다 하늘색 배경 + 검은 글씨 */
     .btn-primary,
     .btn-ghost {
       background: var(--sky);
@@ -339,52 +390,19 @@
       box-shadow: 0 8px 18px rgba(15,23,42,0.12);
     }
 
-    /* SAMPLE REPORT BOX */
-    .sample-page {
-      max-width: 720px;
-      margin: 0 auto;
-      background: var(--sky);
-      padding: 18px 16px 20px;
-      border-radius: 14px;
-      border: 1px solid var(--sky-border);
-      box-shadow: 0 10px 22px rgba(15,23,42,0.08);
-      color: #111827;
-    }
-
-    .sample-page h3 {
-      font-size: 20px;
-      margin-bottom: 4px;
-      color: #111827;
-    }
-
-    .sample-meta {
-      font-size: 13px;
-      color: #4b5563;
-      margin-bottom: 14px;
-    }
-
-    .sample-page h4 {
-      font-size: 15px;
-      margin-top: 12px;
-      margin-bottom: 6px;
-      color: #0f766e;
-    }
-
-    .sample-page p {
-      font-size: 14px;
-      color: #111827;
-    }
-
-    .sample-divider {
-      margin: 12px 0;
-      border-top: 1px dashed #9ca3af;
-    }
-
     footer {
       margin-top: 22px;
       text-align: center;
       font-size: 11px;
       color: #6b7280;
+    }
+
+    /* 상태 메시지 */
+    .status {
+      margin-top: 10px;
+      font-size: 13px;
+      color: #b91c1c;
+      text-align: center;
     }
 
     @keyframes run-line {
@@ -406,11 +424,11 @@
         margin-bottom: 24px;
       }
       h1 {
-        font-size: 24px;
+        font-size: 22px;
       }
       .slogan-main {
-        font-size: 13px;
-        letter-spacing: 0.22em;
+        font-size: 12px;
+        letter-spacing: 0.2em;
       }
       .columns {
         grid-template-columns: 1fr;
@@ -440,162 +458,76 @@
     <!-- HEADER -->
     <header>
       <div class="badge">WEEKLY PERFORMANCE REPORT</div>
-      <h1>주간 학습 보고서 안내</h1>
+      <h1>주간 학습 보고서</h1>
       <div class="slogan-main">RACE TO MIRACLE</div>
       <p>
-        매주 한 번, 자녀의 학습 상태를 <span class="highlight">정확하고 선명하게</span> 확인하실 수 있는  
-        RTM 주간 리포트 시스템입니다.
+        한 주 동안의 수업 내용을 <span class="highlight">정확하고 간단하게</span> 정리한 리포트입니다.
       </p>
+      <div class="meta-line" id="meta-line">
+        <!-- JS로 채움: 예) 2025년 11월 3주차 · 고2 ○○○ 학생 · 수학 -->
+      </div>
       <div class="speedline-header"></div>
     </header>
 
-    <!-- SECTION 1: 소개 -->
-    <section class="section">
-      <h2><span class="icon">📝</span>주간 학습 보고서란?</h2>
-      <p>
-        한 주 동안의 수업 내용, 태도, 숙제, 테스트, 담임 코멘트를  
-        <span class="em">한눈에 파악</span>하실 수 있도록 정리한 리포트입니다.
-      </p>
-      <ul class="list">
-        <li>✔️ 수업에서 어떤 내용을 다뤘는지 즉시 확인</li>
-        <li>✔️ 숙제 수행률과 이해도, 테스트 결과를 한 번에 체크</li>
-        <li>✔️ 담임 선생님의 코멘트로 강점/약점 및 태도 파악</li>
-      </ul>
+    <div id="status" class="status"></div>
 
-      <div class="pill-list">
-        <a href="#sec-attendance" class="pill">출결 현황</a>
-        <a href="#sec-progress" class="pill">단원별 진도</a>
-        <a href="#sec-homework" class="pill">숙제 수행률</a>
-        <a href="#sec-test" class="pill">테스트 결과</a>
-        <a href="#sec-comment" class="pill">담임 종합 코멘트</a>
-      </div>
+    <!-- SECTION 1: 출결 현황 -->
+    <section class="section">
+      <h2><span class="icon">🕒</span>1. 출결 현황</h2>
+      <p id="attendance">
+        <!-- JS로 채움 -->
+      </p>
     </section>
 
-    <!-- SECTION 2: 발송 방식 -->
+    <!-- SECTION 2: 단원별 진도 -->
     <section class="section">
-      <h2><span class="icon">📨</span>언제, 어떻게 받아보시나요?</h2>
-      <div class="columns">
-        <div>
-          <p>
-            보고서는 <span class="em">매주 일요일 밤</span>  
-            학원에 등록된 보호자 연락처로 발송됩니다.
-          </p>
-          <ul class="list">
-            <li>• 발송 예시: 매주 일요일 21:00 전후</li>
-            <li>• 발송 형식: 카카오톡 또는 문자 + 웹 링크 / PDF</li>
-            <li>• 연락처 변경 시, 반드시 선생님께 알려주세요.</li>
-          </ul>
-          <div class="callout">
-            🔍 첫 발송 전, 테스트 메시지를 한 차례 보내  
-            정상 수신 여부를 먼저 확인해 드립니다.
-          </div>
-        </div>
-
-        <div>
-          <div class="example-box">
-            <div class="example-label">REPORT STRUCTURE EXAMPLE</div>
-            <div class="example-line">
-              <span>1. 출결 · 태도</span><span class="val">결석 0 · 지각 0</span>
-            </div>
-            <div class="example-line">
-              <span>2. 학습 진도</span><span class="val">수1 3단원 삼각함수</span>
-            </div>
-            <div class="example-line">
-              <span>3. 숙제 현황</span><span class="val">수행률 100% · 정답률 84%</span>
-            </div>
-            <div class="example-line">
-              <span>4. 테스트</span><span class="val">단원 테스트 84점</span>
-            </div>
-            <div class="example-line">
-              <span>5. 코멘트</span><span class="val">그래프 해석 우수</span>
-            </div>
-          </div>
-        </div>
-      </div>
+      <h2><span class="icon">📚</span>2. 단원별 진도</h2>
+      <p id="progress">
+        <!-- JS로 채움 -->
+      </p>
     </section>
 
-    <!-- SECTION 3: 실제 리포트 예시 -->
-    <section class="section" id="sample-report">
-      <h2><span class="icon">📊</span>주간 학습 보고서</h2>
-      <p style="margin-bottom:8px;">
-        아래에 학생의 주간 상태를 표기해놓은 곳. 즉, 주간 학습 보고서입니다. 학생 이름, 점수, 진도 등의 내용은 주마다 실제 결과에 맞추어 변경됩니다.
+    <!-- SECTION 3: 숙제 수행률 -->
+    <section class="section">
+      <h2><span class="icon">✏️</span>3. 숙제 수행률</h2>
+      <p id="homework">
+        <!-- JS로 채움 -->
       </p>
+    </section>
 
+    <!-- SECTION 4: 테스트 결과 -->
+    <section class="section">
+      <h2><span class="icon">📊</span>4. 테스트 결과</h2>
+      <p id="test">
+        <!-- JS로 채움 -->
+      </p>
+    </section>
+
+    <!-- SECTION 5: 담임 종합 코멘트 -->
+    <section class="section">
+      <h2><span class="icon">🧑‍🏫</span>5. 담임 종합 코멘트</h2>
       <div class="sample-page">
-        <h3>주간 학습 보고서</h3>
-        <div class="sample-meta">
-          2025년 11월 3주차 · 고2 ○○○ 학생 · 과목: 수학
+        <h3 id="comment-title">담임 종합 코멘트</h3>
+        <div class="sample-meta" id="comment-meta">
+          <!-- 예: 잘한 점 / 보완할 점 / 다음 주 계획 요약 -->
         </div>
 
-        <h4 id="sec-attendance">1. 출결 현황</h4>
-        <p>
-          · 이번 주 수업일: 3회<br/>
-          · 결석 0회 / 지각 0회 / 조퇴 0회<br/>
-          · 수업 태도: 매우 좋음 (수업 내내 집중력이 좋고, 모르는 부분은 바로 질문하는 편입니다.)
-        </p>
+        <h4>① 잘한 점</h4>
+        <p id="comment-good"></p>
 
         <div class="sample-divider"></div>
 
-        <h4 id="sec-progress">2. 단원별 진도</h4>
-        <p>
-          · 학습 단원: 수1 3단원 삼각함수<br/>
-          · 상세 진도: 3.1~3.3(삼각함수의 그래프, 주기·진폭) 개념 정리 및 유형별 문제 풀이<br/>
-          · 이해도: 개념은 전반적으로 이해하였으나, 고난도 문제 적용 시 약간의 추가 연습 필요
-        </p>
+        <h4>② 보완이 필요한 부분</h4>
+        <p id="comment-bad"></p>
 
         <div class="sample-divider"></div>
 
-        <h4 id="sec-homework">3. 숙제 수행률</h4>
-        <p>
-          · 숙제 분량: 연습모드 p.45~52, 총 32문제<br/>
-          · 제출 여부: 제시간 제출<br/>
-          · 수행률: 100% (32/32)<br/>
-          · 정답률: 84% (27/32)<br/>
-          · 코멘트: 양은 모두 채웠으나, 부등식 부호·계산 과정에서의 실수가 반복되어 검산 습관이 필요합니다.
-        </p>
-
-        <div class="sample-divider"></div>
-
-        <h4 id="sec-test">4. 테스트 결과</h4>
-        <p>
-          · 테스트 종류: 삼각함수 소단원 테스트<br/>
-          · 시험 일자: 2025-11-14<br/>
-          · 점수: 84점 / 100점 (반 평균 76점)<br/>
-          · 상대 위치: 상위권<br/>
-          · 해석: 기본 개념 문제는 안정적으로 해결하나, 서술형 고난도 문항에서 풀이를 끝까지 쓰지 않아 감점이 발생했습니다.
-        </p>
-
-        <div class="sample-divider"></div>
-
-        <h4 id="sec-comment">5. 담임 종합 코멘트</h4>
-        <p>
-          ① <strong>잘한 점</strong><br/>
-          · 수업 태도가 안정적이고, 모르는 부분을 바로 질문하려는 태도가 매우 좋습니다.<br/><br/>
-          ② <strong>보완이 필요한 부분</strong><br/>
-          · 계산·부호 실수가 반복되어, 문제를 다 푼 뒤 마지막에 한 번 더 검산하는 습관이 필요합니다.<br/><br/>
-          ③ <strong>다음 주 지도 계획</strong><br/>
-          · 삼각함수 서술형·고난도 문제를 중심으로 최근 틀린 문항을 다시 풀려보며, 실수를 줄이는 방향으로 수업을 진행하겠습니다.
-        </p>
-      </div>
-
-      <div class="callout">
-        ※ 실제 보고서에서는 위와 같은 형식을 유지하되,  
-        학생 개별 상황(단원, 점수, 태도, 코멘트)에 맞추어 내용이 매주 변경됩니다.
+        <h4>③ 다음 주 지도 계획</h4>
+        <p id="comment-plan"></p>
       </div>
     </section>
 
-    <!-- SECTION 4: 활용법 -->
-    <section class="section">
-      <h2><span class="icon">🤝</span>보고서를 이렇게 활용해 주세요</h2>
-      <ul class="list">
-        <li>• 점수 자체보다, <span class="em">한 주 한 주 변화</span>에 주목해 주세요.</li>
-        <li>• 부족한 단원은 혼내기보다 “어디가 어려웠는지”를 먼저 물어봐 주세요.</li>
-        <li>• 잘한 부분은 구체적으로 칭찬해 주시면 학습 동기가 크게 올라갑니다.</li>
-        <li>• 필요 시, 보고서를 바탕으로 개별 상담을 요청해 주셔도 좋습니다.</li>
-      </ul>
-    </section>
-
-    <!-- SECTION 5: FAQ -->
+    <!-- SECTION 6: FAQ -->
     <section class="section">
       <h2><span class="icon">❓</span>자주 묻는 질문 (FAQ)</h2>
       <div class="faq-item">
@@ -612,21 +544,13 @@
           다음 주 보고서부터 새 번호로 발송되도록 변경해 드립니다.
         </div>
       </div>
-      <div class="faq-item">
-        <div class="faq-q">Q. 보고서 내용을 바탕으로 상담을 받고 싶어요.</div>
-        <div class="faq-a">
-          A. 카카오톡 채널 또는 연락처로 편하게 문의해 주시면  
-          가능하신 시간대를 여쭤보고 별도의 상담 시간을 잡아 드립니다.
-        </div>
-      </div>
     </section>
 
-    <!-- SECTION 6: CONTACT -->
+    <!-- SECTION 7: CONTACT -->
     <section class="section">
       <h2><span class="icon">📞</span>문의 및 연락처</h2>
       <p>
-        주간 학습 보고서와 관련하여 궁금하신 점이 있으시면 언제든지 연락 주세요.  
-        (아래 정보는 실제 상황에 맞게 수정해서 사용하시면 됩니다.)
+        주간 학습 보고서와 관련하여 궁금하신 점이 있으시면 언제든지 연락 주세요.
       </p>
 
       <div class="contact-block">
@@ -636,7 +560,7 @@
         </div>
         <div class="contact-item">
           <div class="contact-label">연락처</div>
-          <div class="contact-value">010-2319-7526</div>
+          <div class="contact-value">010-0000-0000</div>
         </div>
         <div class="contact-item">
           <div class="contact-label">카카오톡 채널</div>
@@ -644,24 +568,101 @@
         </div>
         <div class="contact-item">
           <div class="contact-label">상담 가능 시간</div>
-          <div class="contact-value">매일 13:00 ~ 익일 04:00</div>
+          <div class="contact-value">평일 13:00 ~ 22:00 / 주말 협의</div>
         </div>
       </div>
 
       <div class="btn-row">
-        <!-- 여기 href에 실제 카카오 오픈채팅/채널 링크 넣기 -->
-        <a href="https://open.kakao.com/o/gxBvHX1h" class="btn btn-primary" target="_blank">
+        <!-- 여기 href에 실제 카카오 링크 넣기 -->
+        <a href="#" class="btn btn-primary" target="_blank">
           <span class="icon">💬</span>카카오톡으로 문의하기
-        </a>
-        <a href="#sample-report" class="btn btn-ghost">
-          <span class="icon">📄</span>주간 보고서 예시 바로 보기
         </a>
       </div>
     </section>
 
     <footer>
-      오늘 흘린 피와 땀이 없으면 내일의 미래도 없다. 살다 보니 그렇더라. RACE TO MIRACLE 수학 박원욱
+      RTM 주간 보고서 · 학생별 데이터는 주마다 업데이트됩니다.
     </footer>
   </div>
+
+  <!-- JS: 학생별 JSON 불러오기 -->
+  <script>
+    async function loadReport() {
+      const params = new URLSearchParams(window.location.search);
+      const studentId = params.get('student'); // ?student=hong 이런거
+
+      const statusEl = document.getElementById('status');
+
+      if (!studentId) {
+        statusEl.textContent = '학생 코드가 없습니다. 예: ?student=hong 형식으로 접속해 주세요.';
+        return;
+      }
+
+      try {
+        statusEl.textContent = '로딩 중입니다...';
+
+        const res = await fetch(`data/${studentId}.json`);
+        if (!res.ok) {
+          statusEl.textContent = '해당 학생 데이터를 찾을 수 없습니다. (data/' + studentId + '.json)';
+          return;
+        }
+
+        const data = await res.json();
+        statusEl.textContent = ''; // 성공하면 상태 메시지 지우기
+
+        // 상단 메타
+        const metaLine = document.getElementById('meta-line');
+        metaLine.textContent =
+          `${data.week} · ${data.grade} ${data.studentName} 학생 · 과목: ${data.subject}`;
+
+        // 출결
+        const att = data.attendance;
+        document.getElementById('attendance').innerHTML =
+          `· 이번 주 수업일: ${att.totalClasses}회<br/>
+           · 결석 ${att.absent}회 / 지각 ${att.late}회 / 조퇴 ${att.earlyLeave}회<br/>
+           · 수업 태도: ${att.attitude}`;
+
+        // 진도
+        const prog = data.progress;
+        document.getElementById('progress').innerHTML =
+          `· 학습 단원: ${prog.unit}<br/>
+           · 상세 진도: ${prog.detail}<br/>
+           · 이해도: ${prog.understanding}`;
+
+        // 숙제
+        const hw = data.homework;
+        document.getElementById('homework').innerHTML =
+          `· 숙제 분량: ${hw.amount}<br/>
+           · 제출 여부: ${hw.submission}<br/>
+           · 수행률: ${hw.completion}<br/>
+           · 정답률: ${hw.correct}<br/>
+           · 코멘트: ${hw.comment}`;
+
+        // 테스트
+        const test = data.test;
+        document.getElementById('test').innerHTML =
+          `· 테스트 종류: ${test.type}<br/>
+           · 시험 일자: ${test.date}<br/>
+           · 점수: ${test.score}점 / ${test.total}점 (반 평균 ${test.classAverage}점)<br/>
+           · 상대 위치: ${test.rank}<br/>
+           · 해석: ${test.analysis}`;
+
+        // 코멘트
+        const com = data.comment;
+        document.getElementById('comment-title').textContent =
+          `담임 종합 코멘트 - ${data.studentName} 학생`;
+        document.getElementById('comment-meta').textContent = com.summary;
+        document.getElementById('comment-good').textContent = com.good;
+        document.getElementById('comment-bad').textContent = com.need;
+        document.getElementById('comment-plan').textContent = com.plan;
+
+      } catch (e) {
+        console.error(e);
+        statusEl.textContent = '데이터를 불러오는 중 오류가 발생했습니다.';
+      }
+    }
+
+    loadReport();
+  </script>
 </body>
 </html>
