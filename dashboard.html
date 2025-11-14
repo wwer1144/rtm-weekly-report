@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>RTM 전체 학생 대시보드</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body {
+      font-family: "Noto Sans KR", sans-serif;
+      background: #f1f5f9;
+      padding: 20px;
+      color: #0f172a;
+      line-height: 1.6;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 26px;
+      font-weight: 800;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 14px;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.06);
+      margin-bottom: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+    }
+    table th, table td {
+      padding: 10px;
+      border-bottom: 1px solid #e2e8f0;
+      font-size: 14px;
+    }
+    table th {
+      background: #e0f2ff;
+      font-weight: 700;
+    }
+
+    .good { color: #059669; font-weight:600; }
+    .mid  { color: #d97706; font-weight:600; }
+    .bad  { color: #dc2626; font-weight:600; }
+
+    a {
+      color: #0ea5e9;
+      font-weight: 700;
+      text-decoration: none;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>RTM 전체 학생 대시보드</h1>
+
+<div class="card">
+  <h2>📈 전체 학생 평균 변화 (점수)</h2>
+  <canvas id="avgChart"></canvas>
+</div>
+
+<div class="card">
+  <h2>📊 전체 학생 현황 테이블</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>이름</th>
+        <th>학년</th>
+        <th>점수</th>
+        <th>숙제</th>
+        <th>출결</th>
+        <th>상태</th>
+        <th>보고서</th>
+      </tr>
+    </thead>
+
+    <tbody id="table-body"></tbody>
+  </table>
+</div>
+
+<script>
+  async function loadDashboard() {
+
+    // students.json 불러오기
+    const res = await fetch("data/students.json");
+    const students = await res.json();
+
+    let totalScore = 0;
+    let totalHw = 0;
+    let count = 0;
+
+    let avgWeeks = [];
+    let avgScoreList = [];
+
+    const tableBody = document.getElementById("table-body");
+
+    for (const s of students) {
+
+      const jsonRes = await fetch(`data/${s.id}.json`);
+      if (!jsonRes.ok) continue;
+      const data = await jsonRes.json();
+
+      const score = Number(data.test.score);
+      const hw = Number(String(data.homework.completion).replace("%",""));
+      const abs = Number(data.attendance.absent || 0);
+      const late = Number(data.attendance.late || 0);
+      const early = Number(data.attendance.earlyLeave || 0);
+
+      // 평균 계산
+      totalScore += score;
+      totalHw += hw;
+      count++;
+
+      // 상태 분류
+      let status = "";
+      if (score >= 90) status = "<span class='good'>상위</span>";
+      else if (score >= 70) status = "<span class='mid'>중위</span>";
+      else status = "<span class='bad'>하위</span>";
+
+      // 테이블 추가
+      tableBody.innerHTML += `
+        <tr>
+          <td>${data.studentName}</td>
+          <td>${data.grade}</td>
+          <td>${score}</td>
+          <td>${hw}%</td>
+          <td>${abs}/${late}/${early}</td>
+          <td>${status}</td>
+          <td><a href="./?student=${s.id}" target="_blank">보기</a></td>
+        </tr>
+      `;
+
+      // 주차별 평균 그래프 만들기 (history가 있을 때)
+      if (data.history) {
+        avgWeeks = data.history.weeks;
+        avgScoreList = data.history.scores;
+      }
+    }
+
+    // ===== 그래프 생성 =====
+    if (avgWeeks.length > 0) {
+      const ctx = document.getElementById("avgChart");
+
+      new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: avgWeeks,
+          datasets: [{
+            label: "평균 점수 변화",
+            data: avgScoreList,
+            borderColor: "#0ea5e9",
+            backgroundColor: "rgba(14,165,233,0.2)",
+            tension: 0.3
+          }]
+        }
+      });
+    }
+  }
+
+  loadDashboard();
+</script>
+
+</body>
+</html>
