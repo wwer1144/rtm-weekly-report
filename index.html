@@ -33,6 +33,8 @@
       overflow-x: hidden;
     }
 
+    a { text-decoration: none; color: inherit; }
+
     .page {
       max-width: 1024px;
       margin: 0 auto;
@@ -53,6 +55,20 @@
       letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--primary);
+    }
+
+    /* ⭐ 모바일 최적화 상단 고정 헤더 */
+    .sticky-header {
+      position: sticky;
+      top: 0;
+      background: #f5f7ff;
+      padding: 10px 6px;
+      z-index: 999;
+      border-bottom: 1px solid #d1d5db;
+      font-size: 13px;
+      color: #334155;
+      font-weight: 600;
+      display: none;
     }
 
     header {
@@ -115,9 +131,64 @@
       color: #020617;
     }
 
-    .section p { font-size: 14px; color: var(--text-sub); }
+    .section p {
+      font-size: 14px;
+      color: var(--text-sub);
+    }
+
+    /************ 📱 모바일 최적화 ************/
+    @media (max-width: 480px) {
+      h1 { font-size: 22px; }
+      h2 { font-size: 17px; }
+      .section { padding: 16px 14px; margin-bottom: 16px; }
+      .page { padding: 18px 12px 40px; }
+      .badge { font-size: 10px; padding: 5px 14px; }
+      .slogan-main { font-size: 12px; letter-spacing: 0.15em; }
+      p, li { font-size: 13px; line-height: 1.55; }
+      .sticky-header { display: block; }
+    }
 
     .hidden { display: none; }
+
+    /************ 📱 터치 UX 향상 버튼 ************/
+    .btn {
+      padding: 12px 18px;
+      border-radius: 10px;
+      background: var(--sky);
+      border: 1px solid var(--sky-border);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+
+    /************ 📱 아코디언 ************/
+    .accordion-toggle {
+      font-size: 14px;
+      color: #0ea5e9;
+      cursor: pointer;
+      margin-top: 6px;
+    }
+    .accordion-content {
+      display: none;
+      margin-top: 8px;
+    }
+
+    /************ 📱 스켈레톤 로딩 ************/
+    .skeleton {
+      background: #e2e8f0;
+      height: 16px;
+      width: 100%;
+      border-radius: 6px;
+      margin-bottom: 6px;
+      animation: pulse 1.4s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0% { opacity: .6; }
+      50% { opacity: 1; }
+      100% { opacity: .6; }
+    }
 
     footer {
       margin-top: 22px;
@@ -129,8 +200,9 @@
 </head>
 
 <body>
-  <div class="page">
+  <div class="sticky-header" id="sticky-info"></div>
 
+  <div class="page">
     <div class="topbar">
       <div class="logo">RTM MATH LAB</div>
     </div>
@@ -139,18 +211,25 @@
       <div class="badge">WEEKLY PERFORMANCE REPORT</div>
       <h1>주간 학습 보고서</h1>
       <div class="slogan-main">RACE TO MIRACLE</div>
-      <p>한 주 동안의 수업 내용을 <span class="highlight">정확하고 간단하게</span> 정리한 리포트입니다.</p>
+      <p>한 주 동안의 수업 내용을 정확하게 정리한 리포트입니다.</p>
       <div class="meta-line" id="meta-line"></div>
     </header>
 
+    <!-- 스켈레톤 -->
+    <div id="skeleton" class="hidden">
+      <div class="skeleton"></div>
+      <div class="skeleton"></div>
+      <div class="skeleton" style="width:70%;"></div>
+    </div>
+
     <div id="status" class="status"></div>
 
-    <!-- 접속 인증 + 학생 선택 화면 -->
+    <!-- 학생 선택 전 -->
     <div id="selector-view">
       <section class="section">
         <h2>🔐 접속 인증</h2>
         <input id="pin-input" type="password" maxlength="10" placeholder="4자리 비밀번호 입력" />
-        <button id="pin-btn">확인</button>
+        <button class="btn" id="pin-btn">확인</button>
         <div id="pin-msg" class="status"></div>
       </section>
 
@@ -159,195 +238,246 @@
         <select id="student-select">
           <option value="">학생을 선택해 주세요</option>
         </select>
-        <button id="go-report-btn">보고서 열기</button>
+        <button class="btn" id="go-report-btn">보고서 열기</button>
       </section>
     </div>
 
-    <!-- 실제 보고서 화면 -->
+    <!-- 학생 보고서 -->
     <div id="report-view" class="hidden">
 
-      <section class="section">
+      <section class="section r-section">
         <h2>🕒 1. 출결 현황</h2>
-        <p id="attendance"></p>
+        <div class="accordion-content"><p id="attendance"></p></div>
       </section>
 
-      <section class="section">
+      <section class="section r-section">
         <h2>📚 2. 단원별 진도</h2>
-        <p id="progress"></p>
+        <div class="accordion-content"><p id="progress"></p></div>
       </section>
 
-      <section class="section">
+      <section class="section r-section">
         <h2>✏️ 3. 숙제 수행률</h2>
-        <p id="homework"></p>
+        <div class="accordion-content"><p id="homework"></p></div>
       </section>
 
-      <section class="section">
+      <section class="section r-section">
         <h2>📊 4. 테스트 결과</h2>
-        <p id="test"></p>
+        <div class="accordion-content"><p id="test"></p></div>
       </section>
 
-      <section class="section">
+      <section class="section r-section">
         <h2>🧑‍🏫 5. 담임 종합 코멘트</h2>
-        <p id="comment-summary"></p>
-        <p id="comment-good"></p>
-        <p id="comment-need"></p>
-        <p id="comment-plan"></p>
+        <div class="accordion-content">
+          <p id="comment-summary"></p>
+          <p id="comment-good"></p>
+          <p id="comment-need"></p>
+          <p id="comment-plan"></p>
+        </div>
       </section>
     </div>
 
-    <footer>RTM 주간 보고서 © All rights reserved.</footer>
+    <footer>
+      RTM 주간 보고서 © All rights reserved.
+    </footer>
   </div>
 
-    <script>
-    // 간단 잠금용 PIN (원하면 바꿔도 됨)
-    const ACCESS_PIN = "4925";
+<script>
+  // 간단 잠금용 PIN
+  const ACCESS_PIN = "4925";
 
-    const selectorView = document.getElementById('selector-view');
-    const reportView   = document.getElementById('report-view');
-    const statusEl     = document.getElementById('status');
-    const metaLine     = document.getElementById('meta-line');
+  const selectorView = document.getElementById('selector-view');
+  const reportView   = document.getElementById('report-view');
+  const statusEl     = document.getElementById('status');
+  const metaLine     = document.getElementById('meta-line');
+  const stickyInfo   = document.getElementById('sticky-info');
 
-    const pinInput = document.getElementById('pin-input');
-    const pinBtn   = document.getElementById('pin-btn');
-    const pinMsg   = document.getElementById('pin-msg');
-    const studentSelectSection = document.getElementById('student-select-section');
-    const studentSelect = document.getElementById('student-select');
-    const goReportBtn   = document.getElementById('go-report-btn');
+  const pinInput = document.getElementById('pin-input');
+  const pinBtn   = document.getElementById('pin-btn');
+  const pinMsg   = document.getElementById('pin-msg');
+  const studentSelectSection = document.getElementById('student-select-section');
+  const studentSelect = document.getElementById('student-select');
+  const goReportBtn   = document.getElementById('go-report-btn');
 
-    function showSelector() {
-      selectorView.classList.remove('hidden');
-      reportView.classList.add('hidden');
-      metaLine.textContent = '학생을 선택하시면 해당 학생의 주간 학습 보고서를 확인하실 수 있습니다.';
+  const skeleton = document.getElementById('skeleton');
+
+  function showSelector() {
+    selectorView.classList.remove('hidden');
+    reportView.classList.add('hidden');
+    stickyInfo.style.display = "none";
+    metaLine.textContent = '학생을 선택하시면 해당 학생의 주간 학습 보고서를 확인하실 수 있습니다.';
+  }
+
+  function showReport() {
+    selectorView.classList.add('hidden');
+    reportView.classList.remove('hidden');
+    stickyInfo.style.display = "block";
+  }
+
+  function getStudentIdFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('student');
+  }
+
+  // 학생 목록 로딩
+  async function loadStudentList() {
+    try {
+      const res = await fetch('data/students.json');
+      if (!res.ok) return;
+      const list = await res.json();
+
+      studentSelect.innerHTML = '<option value="">학생을 선택해 주세요</option>';
+
+      list.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s.id;
+        opt.textContent = `${s.grade} ${s.name}`;
+        studentSelect.appendChild(opt);
+      });
+    } catch (e) {
+      console.error(e);
     }
+  }
 
-    function showReport() {
-      selectorView.classList.add('hidden');
-      reportView.classList.remove('hidden');
-    }
+  // JSON 안전 접근
+  const safe = (v) => (v === undefined || v === null ? '' : v);
 
-    function getStudentIdFromUrl() {
-      const params = new URLSearchParams(window.location.search);
-      return params.get('student');
-    }
+  // 보고서 로딩
+  async function loadReport(studentId) {
+    statusEl.textContent = '로딩 중입니다...';
+    skeleton.classList.remove('hidden');
+    reportView.classList.add('hidden');
 
-    // 학생 목록 불러오기
-    async function loadStudentList() {
-      try {
-        const res = await fetch('data/students.json');
-        if (!res.ok) return;
-        const list = await res.json();
-
-        studentSelect.innerHTML = '<option value="">학생을 선택해 주세요</option>';
-
-        list.forEach(s => {
-          const opt = document.createElement('option');
-          opt.value = s.id;
-          opt.textContent = `${s.grade} ${s.name}`;
-          studentSelect.appendChild(opt);
-        });
-      } catch (e) {
-        console.error(e);
+    try {
+      const res = await fetch(`data/${studentId}.json`);
+      if (!res.ok) {
+        statusEl.textContent = `해당 학생 데이터를 찾을 수 없습니다. (data/${studentId}.json)`;
+        showSelector();
+        skeleton.classList.add('hidden');
+        return;
       }
+
+      const data = await res.json();
+      statusEl.textContent = '';
+
+      // 상단 정보
+      metaLine.textContent =
+        `${safe(data.week)} · ${safe(data.grade)} ${safe(data.studentName)} 학생 · 과목: ${safe(data.subject)}`;
+
+      stickyInfo.textContent =
+        `${safe(data.studentName)} 학생 · ${safe(data.week)}`;
+
+      // 출결
+      const att = data.attendance || {};
+      document.getElementById('attendance').innerHTML =
+        `· 이번 주 수업일: ${safe(att.totalClasses)}<br/>
+         · 결석 ${safe(att.absent)}회 / 지각 ${safe(att.late)}회 / 조퇴 ${safe(att.earlyLeave)}회<br/>
+         · 수업 태도: ${safe(att.attitude)}`;
+
+      // 진도
+      const prog = data.progress || {};
+      document.getElementById('progress').innerHTML =
+        `· 학습 단원: ${safe(prog.unit)}<br/>
+         · 상세 진도: ${safe(prog.detail)}<br/>
+         · 이해도: ${safe(prog.understanding)}`;
+
+      // 숙제
+      const hw = data.homework || {};
+      document.getElementById('homework').innerHTML =
+        `· 숙제 분량: ${safe(hw.amount)}<br/>
+         · 제출 여부: ${safe(hw.submission)}<br/>
+         · 수행률: ${safe(hw.completion)}<br/>
+         · 정답률: ${safe(hw.correct)}<br/>
+         · 코멘트: ${safe(hw.comment)}`;
+
+      // 테스트
+      const test = data.test || {};
+      document.getElementById('test').innerHTML =
+        `· 테스트 종류: ${safe(test.type)}<br/>
+         · 시험 일자: ${safe(test.date)}<br/>
+         · 점수: ${safe(test.score)}점 / ${safe(test.total)}점 (반 평균 ${safe(test.classAverage)}점)<br/>
+         · 상대 위치: ${safe(test.rank)}<br/>
+         · 해석: ${safe(test.analysis)}`;
+
+      // 코멘트
+      const com = data.comment || {};
+      document.getElementById('comment-summary').textContent = safe(com.summary);
+      document.getElementById('comment-good').textContent    = `① 잘한 점: ${safe(com.good)}`;
+      document.getElementById('comment-need').textContent    = `② 보완이 필요한 부분: ${safe(com.need)}`;
+      document.getElementById('comment-plan').textContent    = `③ 다음 주 지도 계획: ${safe(com.plan)}`;
+
+      skeleton.classList.add('hidden');
+      showReport();
+
+      // 아코디언 기능 생성
+      setupAccordion();
+
+    } catch (e) {
+      console.error(e);
+      statusEl.textContent = '데이터를 불러오는 중 오류가 발생했습니다.';
+      skeleton.classList.add('hidden');
     }
+  }
 
-    // JSON 안전 접근 (undefined/null/빈값 → 빈 문자열)
-    const safe = (v) => (v === undefined || v === null ? '' : v);
+  // 아코디언 기능
+  function setupAccordion() {
+    document.querySelectorAll('.r-section').forEach(sec => {
+      const title = sec.querySelector('h2');
+      const content = sec.querySelector('.accordion-content');
 
-    // 학생 보고서 불러오기
-    async function loadReport(studentId) {
-      statusEl.textContent = '로딩 중입니다...';
+      if (!title || !content) return;
 
-      try {
-        const res = await fetch(`data/${studentId}.json`);
-        if (!res.ok) {
-          statusEl.textContent = `해당 학생 데이터를 찾을 수 없습니다. (data/${studentId}.json)`;
-          showSelector();
-          return;
-        }
+      // 토글 버튼 생성
+      const toggle = document.createElement('div');
+      toggle.className = 'accordion-toggle';
+      toggle.textContent = '내용 보기 ▼';
 
-        const data = await res.json();
-        statusEl.textContent = '';
+      // 맨 아래에 삽입
+      sec.insertBefore(toggle, content);
 
-        metaLine.textContent =
-          `${safe(data.week)} · ${safe(data.grade)} ${safe(data.studentName)} 학생 · 과목: ${safe(data.subject)}`;
+      toggle.addEventListener('click', () => {
+        const open = content.style.display === 'block';
+        content.style.display = open ? 'none' : 'block';
+        toggle.textContent = open ? '내용 보기 ▼' : '접기 ▲';
+      });
+    });
+  }
 
-        const att = data.attendance || {};
-        document.getElementById('attendance').innerHTML =
-          `· 이번 주 수업일: ${safe(att.totalClasses)}<br/>
-           · 결석 ${safe(att.absent)}회 / 지각 ${safe(att.late)}회 / 조퇴 ${safe(att.earlyLeave)}회<br/>
-           · 수업 태도: ${safe(att.attitude)}`;
-
-        const prog = data.progress || {};
-        document.getElementById('progress').innerHTML =
-          `· 학습 단원: ${safe(prog.unit)}<br/>
-           · 상세 진도: ${safe(prog.detail)}<br/>
-           · 이해도: ${safe(prog.understanding)}`;
-
-        const hw = data.homework || {};
-        document.getElementById('homework').innerHTML =
-          `· 숙제 분량: ${safe(hw.amount)}<br/>
-           · 제출 여부: ${safe(hw.submission)}<br/>
-           · 수행률: ${safe(hw.completion)}<br/>
-           · 정답률: ${safe(hw.correct)}<br/>
-           · 코멘트: ${safe(hw.comment)}`;
-
-        const test = data.test || {};
-        document.getElementById('test').innerHTML =
-          `· 테스트 종류: ${safe(test.type)}<br/>
-           · 시험 일자: ${safe(test.date)}<br/>
-           · 점수: ${safe(test.score)}점 / ${safe(test.total)}점 (반 평균 ${safe(test.classAverage)}점)<br/>
-           · 상대 위치: ${safe(test.rank)}<br/>
-           · 해석: ${safe(test.analysis)}`;
-
-        const com = data.comment || {};
-        document.getElementById('comment-summary').textContent = safe(com.summary);
-        document.getElementById('comment-good').textContent = `① 잘한 점: ${safe(com.good)}`;
-        document.getElementById('comment-need').textContent = `② 보완이 필요한 부분: ${safe(com.need)}`;
-        document.getElementById('comment-plan').textContent = `③ 다음 주 지도 계획: ${safe(com.plan)}`;
-
-        showReport();
-      } catch (e) {
-        console.error(e);
-        statusEl.textContent = '데이터를 불러오는 중 오류가 발생했습니다.';
-      }
+  // PIN 확인
+  pinBtn.addEventListener('click', () => {
+    const v = pinInput.value.trim();
+    if (v === ACCESS_PIN) {
+      localStorage.setItem('rtmWeeklyAuthorized', '1');
+      pinMsg.textContent = '';
+      studentSelectSection.classList.remove('hidden');
+      loadStudentList();
+    } else {
+      pinMsg.textContent = '비밀번호가 올바르지 않습니다.';
     }
+  });
 
-    // PIN 확인
-    pinBtn.addEventListener('click', () => {
-      const v = pinInput.value.trim();
-      if (v === ACCESS_PIN) {
-        localStorage.setItem('rtmWeeklyAuthorized', '1');
-        pinMsg.textContent = '';
+  // 학생 선택 후 이동
+  goReportBtn.addEventListener('click', () => {
+    const id = studentSelect.value;
+    if (!id) return;
+    window.location.href = `./?student=${encodeURIComponent(id)}`;
+  });
+
+  // 초기 진입
+  (function init() {
+    const studentId = getStudentIdFromUrl();
+    const authorized = localStorage.getItem('rtmWeeklyAuthorized') === '1';
+
+    if (studentId) {
+      loadReport(studentId);
+    } else {
+      showSelector();
+      if (authorized) {
         studentSelectSection.classList.remove('hidden');
         loadStudentList();
-      } else {
-        pinMsg.textContent = '비밀번호가 올바르지 않습니다.';
       }
-    });
-
-    // 학생 선택 후 이동
-    goReportBtn.addEventListener('click', () => {
-      const id = studentSelect.value;
-      if (!id) return;
-      window.location.href = `./?student=${encodeURIComponent(id)}`;
-    });
-
-    // 초기 진입
-    (function init() {
-      const studentId = getStudentIdFromUrl();
-      const authorized = localStorage.getItem('rtmWeeklyAuthorized') === '1';
-
-      if (studentId) {
-        loadReport(studentId);
-      } else {
-        showSelector();
-        if (authorized) {
-          studentSelectSection.classList.remove('hidden');
-          loadStudentList();
-        }
-      }
-    })();
-  </script>
+    }
+  })();
+</script>
 
 </body>
 </html>
