@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>RTM 주간보고 JSON 생성기 (교사용)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+      background: #f5f7ff;
+      margin: 0;
+      padding: 20px 12px 40px;
+      color: #0f172a;
+    }
+    .wrap {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 22px;
+      margin-bottom: 6px;
+    }
+    .desc {
+      font-size: 13px;
+      color: #4b5563;
+      margin-bottom: 18px;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1.4fr;
+      gap: 16px;
+    }
+    .card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 14px 14px 16px;
+      border: 1px solid #d4d4dd;
+      box-shadow: 0 8px 18px rgba(15,23,42,0.06);
+    }
+    .card h2 {
+      font-size: 15px;
+      margin-bottom: 8px;
+    }
+    .field {
+      margin-bottom: 8px;
+    }
+    .field label {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 3px;
+    }
+    .field input,
+    .field textarea {
+      width: 100%;
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      font-size: 13px;
+      font-family: inherit;
+    }
+    .field textarea {
+      min-height: 54px;
+      resize: vertical;
+    }
+    .field small {
+      font-size: 11px;
+      color: #6b7280;
+    }
+    .btn {
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: none;
+      background: #0ea5e9;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 4px;
+    }
+    .btn:hover { background: #0284c7; }
+    .output {
+      width: 100%;
+      min-height: 260px;
+      margin-top: 10px;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      font-family: monospace;
+      font-size: 12px;
+      white-space: pre;
+    }
+    .status {
+      font-size: 12px;
+      color: #0f766e;
+      margin-top: 6px;
+    }
+    @media (max-width: 768px) {
+      .form-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>RTM 주간보고 JSON 생성기 (교사용)</h1>
+    <div class="desc">
+      왼쪽에 이번 주 데이터를 입력하고 <strong>JSON 만들기</strong>를 누르면  
+      <code>data/학생ID.json</code>에 넣을 내용을 자동으로 만들어 줍니다.  
+      만들어진 JSON은 그대로 복사해서 GitHub에 붙여넣거나, 파일로 다운로드하면 됩니다.
+    </div>
+
+    <div class="form-grid">
+      <div class="card">
+        <h2>입력</h2>
+
+        <div class="field">
+          <label>학생 ID (파일명, 예: hong, leechahoon)</label>
+          <input id="f-id" placeholder="예: hong" />
+          <small>index.html에서 ?student=이 값으로 접속합니다.</small>
+        </div>
+
+        <div class="field">
+          <label>학생 이름</label>
+          <input id="f-name" placeholder="예: 홍길동" />
+        </div>
+
+        <div class="field">
+          <label>학년/반</label>
+          <input id="f-grade" placeholder="예: 고2" />
+        </div>
+
+        <div class="field">
+          <label>주차</label>
+          <input id="f-week" placeholder="예: 2025년 11월 3주차" />
+        </div>
+
+        <div class="field">
+          <label>과목</label>
+          <input id="f-subject" value="수학" />
+        </div>
+
+        <hr style="margin:10px 0; border:none; border-top:1px dashed #e5e7eb;" />
+
+        <div class="field">
+          <label>출결 요약</label>
+          <input id="f-att-total" placeholder="총 수업 3회" />
+        </div>
+        <div class="field">
+          <label>결석/지각/조퇴 (텍스트)</label>
+          <input id="f-att-detail" placeholder="결석 0회 / 지각 0회 / 조퇴 0회" />
+        </div>
+        <div class="field">
+          <label>수업 태도</label>
+          <textarea id="f-att-attitude" placeholder="매우 좋음 (수업 내내 집중력이 좋고, ... )"></textarea>
+        </div>
+
+        <hr style="margin:10px 0; border:none; border-top:1px dashed #e5e7eb;" />
+
+        <div class="field">
+          <label>단원 / 진도</label>
+          <input id="f-prog-unit" placeholder="수1 3단원 삼각함수" />
+        </div>
+        <div class="field">
+          <label>상세 진도</label>
+          <textarea id="f-prog-detail" placeholder="3.1~3.3(삼각함수의 그래프, 주기·진폭) 개념 정리 및 유형별 문제 풀이"></textarea>
+        </div>
+        <div class="field">
+          <label>이해도</label>
+          <textarea id="f-prog-under" placeholder="개념은 전반적으로 이해하였으나, ..."></textarea>
+        </div>
+
+        <hr style="margin:10px 0; border:none; border-top:1px dashed #e5e7eb;" />
+
+        <div class="field">
+          <label>숙제 분량</label>
+          <input id="f-hw-amount" placeholder="연습모드 p.45~52, 총 32문제" />
+        </div>
+        <div class="field">
+          <label>제출 여부</label>
+          <input id="f-hw-sub" placeholder="제시간 제출" />
+        </div>
+        <div class="field">
+          <label>수행률</label>
+          <input id="f-hw-comp" placeholder="100% (32/32)" />
+        </div>
+        <div class="field">
+          <label>정답률</label>
+          <input id="f-hw-corr" placeholder="84% (27/32)" />
+        </div>
+        <div class="field">
+          <label>숙제 코멘트</label>
+          <textarea id="f-hw-comment" placeholder="양은 모두 채웠으나, ..."></textarea>
+        </div>
+
+        <hr style="margin:10px 0; border:none; border-top:1px dashed #e5e7eb;" />
+
+        <div class="field">
+          <label>테스트 종류</label>
+          <input id="f-test-type" placeholder="삼각함수 소단원 테스트" />
+        </div>
+        <div class="field">
+          <label>시험 일자</label>
+          <input id="f-test-date" placeholder="2025-11-14" />
+        </div>
+        <div class="field">
+          <label>점수 / 만점 / 반 평균 / 위치</label>
+          <input id="f-test-score" placeholder="84 / 100 / 76 / 상위권" />
+        </div>
+        <div class="field">
+          <label>테스트 해석</label>
+          <textarea id="f-test-analysis" placeholder="기본 개념 문제는 안정적으로 해결하나, ..."></textarea>
+        </div>
+
+        <hr style="margin:10px 0; border:none; border-top:1px dashed #e5e7eb;" />
+
+        <div class="field">
+          <label>코멘트 요약</label>
+          <textarea id="f-com-summary" placeholder="집중력과 태도는 안정적이며, ..."></textarea>
+        </div>
+        <div class="field">
+          <label>잘한 점</label>
+          <textarea id="f-com-good"></textarea>
+        </div>
+        <div class="field">
+          <label>보완이 필요한 부분</label>
+          <textarea id="f-com-need"></textarea>
+        </div>
+        <div class="field">
+          <label>다음 주 계획</label>
+          <textarea id="f-com-plan"></textarea>
+        </div>
+
+        <button class="btn" id="make-json-btn">JSON 만들기</button>
+        <div class="status" id="msg"></div>
+      </div>
+
+      <div class="card">
+        <h2>결과 JSON (data/학생ID.json)</h2>
+        <textarea id="output" class="output" spellcheck="false"></textarea>
+        <button class="btn" id="download-btn">파일로 다운로드 (.json)</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function makeJson() {
+      const id = document.getElementById('f-id').value.trim();
+      const name = document.getElementById('f-name').value.trim();
+      if (!id || !name) {
+        document.getElementById('msg').textContent = '학생 ID와 이름은 필수입니다.';
+        return;
+      }
+
+      const data = {
+        studentName: name,
+        grade: document.getElementById('f-grade').value.trim() || "",
+        week: document.getElementById('f-week').value.trim() || "",
+        subject: document.getElementById('f-subject').value.trim() || "수학",
+        attendance: {
+          totalClasses: document.getElementById('f-att-total').value.trim() || "",
+          absent: "",
+          late: "",
+          earlyLeave: "",
+          attitude: document.getElementById('f-att-attitude').value.trim() || ""
+        },
+        progress: {
+          unit: document.getElementById('f-prog-unit').value.trim() || "",
+          detail: document.getElementById('f-prog-detail').value.trim() || "",
+          understanding: document.getElementById('f-prog-under').value.trim() || ""
+        },
+        homework: {
+          amount: document.getElementById('f-hw-amount').value.trim() || "",
+          submission: document.getElementById('f-hw-sub').value.trim() || "",
+          completion: document.getElementById('f-hw-comp').value.trim() || "",
+          correct: document.getElementById('f-hw-corr').value.trim() || "",
+          comment: document.getElementById('f-hw-comment').value.trim() || ""
+        },
+        test: {
+          type: document.getElementById('f-test-type').value.trim() || "",
+          date: document.getElementById('f-test-date').value.trim() || "",
+          score: "",
+          total: "",
+          classAverage: "",
+          rank: "",
+          analysis: document.getElementById('f-test-analysis').value.trim() || ""
+        },
+        comment: {
+          summary: document.getElementById('f-com-summary').value.trim() || "",
+          good: document.getElementById('f-com-good').value.trim() || "",
+          need: document.getElementById('f-com-need').value.trim() || "",
+          plan: document.getElementById('f-com-plan').value.trim() || ""
+        }
+      };
+
+      // 점수/만점/평균/위치 분리
+      const scoreLine = document.getElementById('f-test-score').value.trim();
+      if (scoreLine) {
+        const parts = scoreLine.split('/').map(s => s.trim());
+        if (parts[0]) data.test.score = parts[0];
+        if (parts[1]) data.test.total = parts[1];
+        if (parts[2]) data.test.classAverage = parts[2];
+        if (parts[3]) data.test.rank = parts[3];
+      }
+
+      const jsonText = JSON.stringify(data, null, 2);
+      document.getElementById('output').value = jsonText;
+      document.getElementById('msg').textContent =
+        '완성! data/' + id + '.json 에 붙여넣으면 됩니다.';
+    }
+
+    function downloadJson() {
+      const id = document.getElementById('f-id').value.trim();
+      const txt = document.getElementById('output').value.trim();
+      if (!id || !txt) return;
+
+      const blob = new Blob([txt], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = id + '.json';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    document.getElementById('make-json-btn').addEventListener('click', makeJson);
+    document.getElementById('download-btn').addEventListener('click', downloadJson);
+  </script>
+</body>
+</html>
