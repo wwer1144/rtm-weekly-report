@@ -1,0 +1,40 @@
+{
+  "studentName": "김윤호",
+  "grade": "중1",
+  "week": "2025년 11월 3주차",
+  "subject": "수학",
+  "attendance": {
+    "totalClasses": "총 수업 3회",
+    "absent": "",
+    "late": "",
+    "earlyLeave": "",
+    "attitude": "모르는 것을 흡수하려고 하는 의지와 열의가 있습니다. 수업 태도는 윤호가 짱이에요."
+  },
+  "progress": {
+    "unit": "기말고사 대비",
+    "detail": "원과 부채꼴 ~ 입체도형의 겉넓이와 부피",
+    "understanding": "개념은 전반적으로 이해했으나 어려운 문제를 보면 새롭게 아이디어를 만들어내는 힘은 아직 부족합니다."
+  },
+  "homework": {
+    "amount": "기말고사 내신대비 기출문제집",
+    "submission": "제시간 제출",
+    "completion": "100%",
+    "correct": "84%",
+    "comment": "모르는 것을 해결하는 힘만 기른다면 잘 할 학생입니다."
+  },
+  "test": {
+    "type": "주간 테스트",
+    "date": "2025-11-14",
+    "score": "84",
+    "total": "100",
+    "classAverage": "76",
+    "rank": "중상위권",
+    "analysis": "테스트 보고 나면 말씀드리겠습니다."
+  },
+  "comment": {
+    "summary": "좋습니다.",
+    "good": "잘합니다",
+    "need": "보완이 필요합니다",
+    "plan": "!!!!"
+  }
+}
