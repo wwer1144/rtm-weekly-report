@@ -1,14 +1,71 @@
 [
   {
-    "id": "hong",
-    "name": "홍길동",
-    "grade": "고2",
+    "id": "leechaehoon",
+    "name": "이채훈",
+    "grade": "중1",
     "subject": "수학"
   },
   {
-    "id": "leechahoon",
-    "name": "이채훈",
+    "id": "kimkangin",
+    "name": "김강인",
     "grade": "중1",
+    "subject": "수학"
+  },
+    {
+    "id": "kimyoonho",
+    "name": "김윤호",
+    "grade": "중1",
+    "subject": "수학"
+  },
+    {
+    "id": "kanggyuon",
+    "name": "강규온",
+    "grade": "중1",
+    "subject": "수학"
+  },  {
+    "id": "baetaerang",
+    "name": "배태랑",
+    "grade": "중1",
+    "subject": "수학"
+  },  {
+    "id": "ohsehong",
+    "name": "오세홍",
+    "grade": "중1",
+    "subject": "수학"
+  },  {
+    "id": "leeyechan",
+    "name": "이예찬",
+    "grade": "중1",
+    "subject": "수학"
+  },  {
+    "id": "jeongjinwoo",
+    "name": "정진우",
+    "grade": "중1",
+    "subject": "수학"
+  },  {
+    "id": "jeongyoolwon",
+    "name": "정율원",
+    "grade": "중2",
+    "subject": "수학"
+  },  {
+    "id": "cheyujin",
+    "name": "제유진",
+    "grade": "중2",
+    "subject": "수학"
+  },  {
+    "id": "limseojin",
+    "name": "임서진",
+    "grade": "중2",
+    "subject": "수학"
+  },  {
+    "id": "kimgayeon",
+    "name": "김가연",
+    "grade": "중3",
+    "subject": "수학"
+  },  {
+    "id": "songsihoo",
+    "name": "송시후",
+    "grade": "중3",
     "subject": "수학"
   }
 ]
