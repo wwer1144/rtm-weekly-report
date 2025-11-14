@@ -6,37 +6,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <style>
-    /* ===============================
-       RTM COLOR SYSTEM - LIGHT THEME
-       =============================== */
+    /* ===== 기본 색 (화이트) ===== */
     :root {
-      --bg: #f3f4f6;
-      --bg-alt: #e5e7eb;
+      --bg: #f5f5f5;
       --card-bg: #ffffff;
       --text-main: #111827;
       --text-sub: #4b5563;
-      --border: #d1d5db;
+      --border: #e5e7eb;
 
-      --neon-cyan: #0ea5e9;
-      --neon-purple: #7c3aed;
-      --neon-pink: #ec4899;
-
-      --shadow-card: 0 14px 30px rgba(15, 23, 42, 0.08);
+      --primary: #0ea5e9;
+      --secondary: #6366f1;
+      --accent: #0f766e;
     }
 
-    /* ===============================
-       RESET / GLOBAL
-       =============================== */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { height: 100%; }
     html { scroll-behavior: smooth; }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
-      background: radial-gradient(circle at top, #ffffff 0, #f3f4f6 50%, #e5e7eb 100%);
+      background: var(--bg);
       color: var(--text-main);
       line-height: 1.6;
-      position: relative;
       overflow-x: hidden;
     }
 
@@ -46,12 +37,9 @@
       max-width: 1024px;
       margin: 0 auto;
       padding: 26px 18px 60px;
-      position: relative;
     }
 
-    /* ===============================
-       TOP BAR / LOGO
-       =============================== */
+    /* ===== 상단 영역 ===== */
     .topbar {
       display: flex;
       align-items: center;
@@ -67,15 +55,15 @@
       font-weight: 800;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: var(--neon-cyan);
+      color: var(--primary);
     }
 
     .logo-mark {
       width: 26px;
       height: 26px;
       border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, #ffffff, var(--neon-cyan), #0f172a);
-      box-shadow: 0 0 10px rgba(14,165,233,0.5);
+      background: radial-gradient(circle at 30% 30%, #ffffff, var(--primary));
+      box-shadow: 0 0 8px rgba(14,165,233,0.4);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -91,14 +79,9 @@
       color: var(--text-sub);
     }
 
-    /* ===============================
-       HEADER
-       =============================== */
     header {
       text-align: center;
-      margin-bottom: 34px;
-      position: relative;
-      padding-top: 10px;
+      margin-bottom: 30px;
     }
 
     .badge {
@@ -106,28 +89,28 @@
       font-size: 11px;
       padding: 5px 14px;
       border-radius: 999px;
-      background: linear-gradient(90deg, rgba(14, 165, 233, 0.08), rgba(124, 58, 237, 0.16));
-      color: var(--neon-cyan);
+      background: linear-gradient(90deg, rgba(14,165,233,0.08), rgba(99,102,241,0.12));
+      color: var(--primary);
       margin-bottom: 10px;
       font-weight: 600;
       letter-spacing: 0.12em;
-      border: 1px solid rgba(14, 165, 233, 0.4);
+      border: 1px solid rgba(14,165,233,0.5);
     }
 
     h1 {
-      font-size: 30px;
+      font-size: 28px;
       margin-bottom: 6px;
       font-weight: 900;
-      letter-spacing: -0.03em;
+      letter-spacing: -0.02em;
       color: #0f172a;
     }
 
     .slogan-main {
-      font-size: 18px;
+      font-size: 16px;
       margin-bottom: 10px;
       text-transform: uppercase;
       letter-spacing: 0.32em;
-      color: var(--neon-purple);
+      color: var(--secondary);
     }
 
     header p {
@@ -136,7 +119,7 @@
     }
 
     .highlight {
-      color: var(--neon-cyan);
+      color: var(--primary);
       font-weight: 700;
     }
 
@@ -144,56 +127,25 @@
       width: 100%;
       height: 2px;
       margin: 18px auto 0;
-      position: relative;
-      overflow: hidden;
-      background: linear-gradient(90deg, transparent, #e5e7eb, transparent);
+      background: linear-gradient(90deg, transparent, #d1d5db, transparent);
     }
 
-    .speedline-header::before {
-      content: "";
-      position: absolute;
-      left: -30%;
-      top: 0;
-      width: 60%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, var(--neon-cyan), var(--neon-purple), transparent);
-      animation: run-line 2.4s linear infinite;
-      opacity: 0.7;
-    }
-
-    /* ===============================
-       SECTION / CARD
-       =============================== */
+    /* ===== 공통 카드 섹션 ===== */
     .section {
       background: var(--card-bg);
-      border-radius: 18px;
-      padding: 22px 22px 20px;
-      margin-bottom: 22px;
+      border-radius: 16px;
+      padding: 20px 20px 18px;
+      margin-bottom: 20px;
       border: 1px solid var(--border);
-      box-shadow: var(--shadow-card);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .section::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: -25%;
-      width: 60%;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--neon-cyan), var(--neon-purple), transparent);
-      opacity: 0.5;
-      animation: run-line 3s linear infinite;
-      animation-delay: -1s;
+      box-shadow: 0 10px 24px rgba(15,23,42,0.06);
     }
 
     .section h2 {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       font-size: 18px;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       color: #0f172a;
     }
 
@@ -215,10 +167,11 @@
     .list li + li { margin-top: 4px; }
 
     .em {
-      color: var(--neon-cyan);
+      color: var(--primary);
       font-weight: 600;
     }
 
+    /* ===== Pill 링크 ===== */
     .pill-list {
       display: flex;
       flex-wrap: wrap;
@@ -237,9 +190,7 @@
       cursor: pointer;
     }
 
-    /* ===============================
-       GRID LAYOUT
-       =============================== */
+    /* ===== 그리드 ===== */
     .columns {
       display: grid;
       grid-template-columns: 1.2fr 1fr;
@@ -247,23 +198,20 @@
       margin-top: 4px;
     }
 
-    /* ===============================
-       EXAMPLE BOX
-       =============================== */
+    /* ===== 작은 예시 박스 ===== */
     .example-box {
       background: #f9fafb;
-      border-radius: 14px;
-      padding: 13px 14px 12px;
+      border-radius: 12px;
+      padding: 12px 13px;
       border: 1px solid #e5e7eb;
-      box-shadow: 0 8px 18px rgba(15,23,42,0.06);
       font-size: 13px;
     }
 
     .example-label {
       font-size: 11px;
       font-weight: 700;
-      color: #1f2937;
-      margin-bottom: 7px;
+      color: #374151;
+      margin-bottom: 6px;
       text-transform: uppercase;
       letter-spacing: 0.12em;
     }
@@ -272,7 +220,7 @@
       display: flex;
       justify-content: space-between;
       font-size: 13px;
-      margin-bottom: 4px;
+      margin-bottom: 3px;
     }
 
     .example-line span.val {
@@ -280,25 +228,21 @@
       font-weight: 600;
     }
 
-    /* ===============================
-       CALLOUT
-       =============================== */
+    /* ===== 안내 박스 ===== */
     .callout {
       margin-top: 12px;
       border-radius: 10px;
-      padding: 10px 11px;
+      padding: 9px 10px;
       font-size: 13px;
       color: #075985;
       background: #e0f2fe;
       border: 1px dashed #38bdf8;
     }
 
-    /* ===============================
-       FAQ
-       =============================== */
+    /* ===== FAQ ===== */
     .faq-item + .faq-item {
-      margin-top: 12px;
-      padding-top: 10px;
+      margin-top: 10px;
+      padding-top: 8px;
       border-top: 1px dashed var(--border);
     }
 
@@ -314,22 +258,19 @@
       font-size: 13px;
     }
 
-    /* ===============================
-       CONTACT BLOCK
-       =============================== */
+    /* ===== 연락처 ===== */
     .contact-block {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 13px;
+      gap: 12px;
       margin-top: 10px;
     }
 
     .contact-item {
       background: #f9fafb;
-      border-radius: 12px;
-      padding: 10px 11px;
+      border-radius: 10px;
+      padding: 9px 10px;
       border: 1px solid #e5e7eb;
-      box-shadow: 0 8px 18px rgba(15,23,42,0.05);
     }
 
     .contact-label {
@@ -344,9 +285,7 @@
       color: #111827;
     }
 
-    /* ===============================
-       BUTTONS
-       =============================== */
+    /* ===== 버튼 ===== */
     .btn-row {
       margin-top: 14px;
       display: flex;
@@ -364,8 +303,6 @@
       align-items: center;
       gap: 6px;
       border: none;
-      position: relative;
-      overflow: hidden;
       transition: transform 0.15s ease-out, box-shadow 0.15s ease-out, background 0.15s ease-out;
     }
 
@@ -374,56 +311,35 @@
     }
 
     .btn-primary {
-      background: linear-gradient(90deg, #0ea5e9, #6366f1);
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
       color: #ffffff;
-      box-shadow: 0 10px 20px rgba(59,130,246,0.35);
-    }
-
-    .btn-primary::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: -40%;
-      width: 40%;
-      height: 200%;
-      background: linear-gradient(120deg, rgba(255,255,255,0.9), transparent);
-      opacity: 0;
-      transform: skewX(-25deg);
-      transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+      box-shadow: 0 8px 18px rgba(59,130,246,0.35);
     }
 
     .btn-ghost {
-      background: transparent;
+      background: #ffffff;
       color: #0f172a;
-      border: 1px solid #cbd5f5;
-      box-shadow: 0 0 0 rgba(0,0,0,0);
+      border: 1px solid #d1d5db;
     }
 
     .btn:hover {
-      transform: translateY(-1px) scale(1.01);
-      box-shadow: 0 10px 18px rgba(15,23,42,0.12);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(15,23,42,0.12);
     }
 
-    .btn-primary:hover::after {
-      opacity: 0.7;
-      transform: translateX(130%) skewX(-25deg);
-    }
-
-    /* ===============================
-       SAMPLE REPORT INNER STYLE
-       =============================== */
+    /* ===== 샘플 리포트 박스 ===== */
     .sample-page {
       max-width: 720px;
       margin: 0 auto;
       background: #ffffff;
-      padding: 20px 18px 22px;
-      border-radius: 16px;
+      padding: 18px 16px 20px;
+      border-radius: 14px;
       border: 1px solid #e5e7eb;
-      box-shadow: 0 12px 26px rgba(15,23,42,0.08);
+      box-shadow: 0 10px 22px rgba(15,23,42,0.08);
     }
 
     .sample-page h3 {
-      font-size: 22px;
+      font-size: 20px;
       margin-bottom: 4px;
       color: #111827;
     }
@@ -431,79 +347,59 @@
     .sample-meta {
       font-size: 13px;
       color: #6b7280;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .sample-page h4 {
-      font-size: 16px;
-      margin-top: 14px;
+      font-size: 15px;
+      margin-top: 12px;
       margin-bottom: 6px;
-      color: #0f766e;
+      color: var(--accent);
     }
 
-    .sample-page p, .sample-page li {
+    .sample-page p {
       font-size: 14px;
       color: #374151;
     }
 
     .sample-divider {
-      margin: 14px 0;
+      margin: 12px 0;
       border-top: 1px dashed #e5e7eb;
     }
 
-    /* ===============================
-       FOOTER
-       =============================== */
     footer {
-      margin-top: 26px;
+      margin-top: 22px;
       text-align: center;
       font-size: 11px;
       color: #9ca3af;
     }
 
-    /* ===============================
-       ANIMATIONS
-       =============================== */
-    @keyframes run-line {
-      0%   { transform: translateX(0); }
-      100% { transform: translateX(180%); }
-    }
-
-    /* ===============================
-       MOBILE
-       =============================== */
+    /* ===== 반응형 ===== */
     @media (max-width: 768px) {
       .page {
         padding: 20px 14px 40px;
       }
-
       .topbar {
         flex-direction: column;
         align-items: flex-start;
         gap: 4px;
       }
-
       header {
-        margin-bottom: 26px;
+        margin-bottom: 24px;
       }
-
       h1 {
         font-size: 24px;
       }
-
       .slogan-main {
-        font-size: 14px;
-        letter-spacing: 0.24em;
+        font-size: 13px;
+        letter-spacing: 0.22em;
       }
-
       .columns {
         grid-template-columns: 1fr;
       }
-
       .contact-block {
         grid-template-columns: 1fr;
       }
-
       .section {
         padding: 18px 16px 18px;
       }
