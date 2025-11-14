@@ -2,30 +2,26 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>RTM 주간 학습 보고서 안내</title>
+  <title>RTM 주간 학습 보고서 안내 (Light)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <style>
     /* ===============================
-       RTM COLOR SYSTEM
+       RTM COLOR SYSTEM - LIGHT THEME
        =============================== */
     :root {
-      --bg: #050716;
-      --bg-alt: #070a1c;
-      --card-bg: #101529;
-      --text-main: #e5e7eb;
-      --text-sub: #9ca3af;
-      --border: #202742;
+      --bg: #f3f4f6;
+      --bg-alt: #e5e7eb;
+      --card-bg: #ffffff;
+      --text-main: #111827;
+      --text-sub: #4b5563;
+      --border: #d1d5db;
 
-      --neon-cyan: #00eaff;
-      --neon-purple: #7c3cff;
-      --neon-pink: #ff2e88;
+      --neon-cyan: #0ea5e9;
+      --neon-purple: #7c3aed;
+      --neon-pink: #ec4899;
 
-      --glow-cyan: 0 0 16px rgba(0, 234, 255, 0.9);
-      --glow-purple: 0 0 18px rgba(124, 60, 255, 0.9);
-      --glow-pink: 0 0 18px rgba(255, 46, 136, 0.9);
-
-      --shadow-card: 0 18px 40px rgba(0, 0, 0, 0.7);
+      --shadow-card: 0 14px 30px rgba(15, 23, 42, 0.08);
     }
 
     /* ===============================
@@ -33,44 +29,18 @@
        =============================== */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { height: 100%; }
-    html { scroll-behavior: smooth; } /* 부드러운 스크롤 */
+    html { scroll-behavior: smooth; }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
-      background: radial-gradient(circle at top, #10194a 0, #050716 55%, #000000 100%);
+      background: radial-gradient(circle at top, #ffffff 0, #f3f4f6 50%, #e5e7eb 100%);
       color: var(--text-main);
       line-height: 1.6;
       position: relative;
       overflow-x: hidden;
     }
 
-    /* 배경 네온 광원 */
-    body::before,
-    body::after {
-      content: "";
-      position: fixed;
-      width: 260px;
-      height: 260px;
-      border-radius: 50%;
-      filter: blur(60px);
-      opacity: 0.45;
-      pointer-events: none;
-      z-index: -2;
-    }
-
-    body::before {
-      background: radial-gradient(circle, rgba(0,234,255,0.6), transparent 60%);
-      top: -80px;
-      right: 5%;
-    }
-
-    body::after {
-      background: radial-gradient(circle, rgba(124,60,255,0.7), transparent 60%);
-      bottom: -80px;
-      left: 0;
-    }
-
-    a { text-decoration: none; }
+    a { text-decoration: none; color: inherit; }
 
     .page {
       max-width: 1024px;
@@ -98,21 +68,20 @@
       letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--neon-cyan);
-      text-shadow: var(--glow-cyan);
     }
 
     .logo-mark {
       width: 26px;
       height: 26px;
       border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, #ffffff, var(--neon-cyan), #002c4f);
-      box-shadow: var(--glow-cyan);
+      background: radial-gradient(circle at 30% 30%, #ffffff, var(--neon-cyan), #0f172a);
+      box-shadow: 0 0 10px rgba(14,165,233,0.5);
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 13px;
       font-weight: 900;
-      color: #020617;
+      color: #0b1120;
     }
 
     .top-tagline {
@@ -137,13 +106,12 @@
       font-size: 11px;
       padding: 5px 14px;
       border-radius: 999px;
-      background: linear-gradient(90deg, rgba(0, 234, 255, 0.16), rgba(124, 60, 255, 0.22));
+      background: linear-gradient(90deg, rgba(14, 165, 233, 0.08), rgba(124, 58, 237, 0.16));
       color: var(--neon-cyan);
       margin-bottom: 10px;
       font-weight: 600;
       letter-spacing: 0.12em;
-      text-shadow: var(--glow-cyan);
-      border: 1px solid rgba(0, 234, 255, 0.35);
+      border: 1px solid rgba(14, 165, 233, 0.4);
     }
 
     h1 {
@@ -151,10 +119,7 @@
       margin-bottom: 6px;
       font-weight: 900;
       letter-spacing: -0.03em;
-      color: #ffffff;
-      text-shadow:
-        0 0 8px rgba(0,0,0,0.8),
-        0 0 18px rgba(0, 234, 255, 0.7);
+      color: #0f172a;
     }
 
     .slogan-main {
@@ -163,7 +128,6 @@
       text-transform: uppercase;
       letter-spacing: 0.32em;
       color: var(--neon-purple);
-      text-shadow: var(--glow-purple);
     }
 
     header p {
@@ -174,17 +138,15 @@
     .highlight {
       color: var(--neon-cyan);
       font-weight: 700;
-      text-shadow: var(--glow-cyan);
     }
 
-    /* 헤더 하단 스피드라인 */
     .speedline-header {
       width: 100%;
       height: 2px;
       margin: 18px auto 0;
       position: relative;
       overflow: hidden;
-      background: radial-gradient(circle, rgba(15,23,42,0.9), transparent 70%);
+      background: linear-gradient(90deg, transparent, #e5e7eb, transparent);
     }
 
     .speedline-header::before {
@@ -196,14 +158,14 @@
       height: 100%;
       background: linear-gradient(90deg, transparent, var(--neon-cyan), var(--neon-purple), transparent);
       animation: run-line 2.4s linear infinite;
+      opacity: 0.7;
     }
 
     /* ===============================
        SECTION / CARD
        =============================== */
     .section {
-      background: radial-gradient(circle at top left, rgba(124,60,255,0.25), transparent 55%),
-                  var(--card-bg);
+      background: var(--card-bg);
       border-radius: 18px;
       padding: 22px 22px 20px;
       margin-bottom: 22px;
@@ -221,7 +183,7 @@
       width: 60%;
       height: 2px;
       background: linear-gradient(90deg, transparent, var(--neon-cyan), var(--neon-purple), transparent);
-      opacity: 0.7;
+      opacity: 0.5;
       animation: run-line 3s linear infinite;
       animation-delay: -1s;
     }
@@ -232,8 +194,7 @@
       gap: 10px;
       font-size: 18px;
       margin-bottom: 10px;
-      color: var(--neon-cyan);
-      text-shadow: var(--glow-cyan);
+      color: #0f172a;
     }
 
     .section h2 .icon {
@@ -256,7 +217,6 @@
     .em {
       color: var(--neon-cyan);
       font-weight: 600;
-      text-shadow: var(--glow-cyan);
     }
 
     .pill-list {
@@ -270,10 +230,9 @@
       padding: 5px 12px;
       border-radius: 999px;
       font-size: 11px;
-      background: rgba(124, 60, 255, 0.15);
-      border: 1px solid rgba(124, 60, 255, 0.45);
-      color: var(--neon-purple);
-      text-shadow: var(--glow-purple);
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1d4ed8;
       white-space: nowrap;
       cursor: pointer;
     }
@@ -292,22 +251,21 @@
        EXAMPLE BOX
        =============================== */
     .example-box {
-      background: rgba(5, 7, 22, 0.85);
+      background: #f9fafb;
       border-radius: 14px;
       padding: 13px 14px 12px;
-      border: 1px solid var(--border);
-      box-shadow: 0 14px 30px rgba(0,0,0,0.65);
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 8px 18px rgba(15,23,42,0.06);
       font-size: 13px;
     }
 
     .example-label {
       font-size: 11px;
       font-weight: 700;
-      color: var(--neon-cyan);
+      color: #1f2937;
       margin-bottom: 7px;
       text-transform: uppercase;
       letter-spacing: 0.12em;
-      text-shadow: var(--glow-cyan);
     }
 
     .example-line {
@@ -318,7 +276,7 @@
     }
 
     .example-line span.val {
-      color: #ffffff;
+      color: #111827;
       font-weight: 600;
     }
 
@@ -330,10 +288,9 @@
       border-radius: 10px;
       padding: 10px 11px;
       font-size: 13px;
-      color: var(--neon-cyan);
-      background: linear-gradient(90deg, rgba(0,234,255,0.12), rgba(124,60,255,0.16));
-      border: 1px dashed rgba(0, 234, 255, 0.6);
-      text-shadow: var(--glow-cyan);
+      color: #075985;
+      background: #e0f2fe;
+      border: 1px dashed #38bdf8;
     }
 
     /* ===============================
@@ -346,10 +303,9 @@
     }
 
     .faq-q {
-      color: var(--neon-cyan);
+      color: #111827;
       font-weight: 700;
       margin-bottom: 4px;
-      text-shadow: var(--glow-cyan);
       font-size: 14px;
     }
 
@@ -369,11 +325,11 @@
     }
 
     .contact-item {
-      background: rgba(5, 7, 22, 0.85);
+      background: #f9fafb;
       border-radius: 12px;
       padding: 10px 11px;
-      border: 1px solid var(--border);
-      box-shadow: 0 12px 26px rgba(0,0,0,0.7);
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 8px 18px rgba(15,23,42,0.05);
     }
 
     .contact-label {
@@ -385,8 +341,7 @@
     .contact-value {
       font-size: 13px;
       font-weight: 700;
-      color: var(--neon-cyan);
-      text-shadow: var(--glow-cyan);
+      color: #111827;
     }
 
     /* ===============================
@@ -419,9 +374,9 @@
     }
 
     .btn-primary {
-      background: radial-gradient(circle at 20% 0, #ffffff, var(--neon-cyan), #004a63);
-      color: #020617;
-      box-shadow: var(--glow-cyan);
+      background: linear-gradient(90deg, #0ea5e9, #6366f1);
+      color: #ffffff;
+      box-shadow: 0 10px 20px rgba(59,130,246,0.35);
     }
 
     .btn-primary::after {
@@ -439,14 +394,14 @@
 
     .btn-ghost {
       background: transparent;
-      color: var(--neon-cyan);
-      border: 1px solid rgba(0, 234, 255, 0.5);
-      box-shadow: 0 0 10px rgba(0, 234, 255, 0.4);
+      color: #0f172a;
+      border: 1px solid #cbd5f5;
+      box-shadow: 0 0 0 rgba(0,0,0,0);
     }
 
     .btn:hover {
-      transform: translateY(-1px) scale(1.02);
-      box-shadow: 0 0 24px rgba(0,0,0,0.9);
+      transform: translateY(-1px) scale(1.01);
+      box-shadow: 0 10px 18px rgba(15,23,42,0.12);
     }
 
     .btn-primary:hover::after {
@@ -460,22 +415,22 @@
     .sample-page {
       max-width: 720px;
       margin: 0 auto;
-      background: #020617;
+      background: #ffffff;
       padding: 20px 18px 22px;
       border-radius: 16px;
-      border: 1px solid #1e293b;
-      box-shadow: 0 18px 40px rgba(0,0,0,0.8);
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 12px 26px rgba(15,23,42,0.08);
     }
 
     .sample-page h3 {
       font-size: 22px;
       margin-bottom: 4px;
-      color: #e5e7eb;
+      color: #111827;
     }
 
     .sample-meta {
       font-size: 13px;
-      color: #9ca3af;
+      color: #6b7280;
       margin-bottom: 16px;
     }
 
@@ -483,16 +438,17 @@
       font-size: 16px;
       margin-top: 14px;
       margin-bottom: 6px;
-      color: #38bdf8;
+      color: #0f766e;
     }
 
     .sample-page p, .sample-page li {
       font-size: 14px;
+      color: #374151;
     }
 
     .sample-divider {
       margin: 14px 0;
-      border-top: 1px dashed #1f2937;
+      border-top: 1px dashed #e5e7eb;
     }
 
     /* ===============================
@@ -502,7 +458,7 @@
       margin-top: 26px;
       text-align: center;
       font-size: 11px;
-      color: #6b7280;
+      color: #9ca3af;
     }
 
     /* ===============================
@@ -575,7 +531,7 @@
       <div class="slogan-main">RACE TO MIRACLE</div>
       <p>
         매주 한 번, 자녀의 학습 상태를 <span class="highlight">정확하고 선명하게</span> 확인하실 수 있는  
-        RTM 네온 리포트 시스템입니다.
+        RTM 주간 리포트 시스템입니다.
       </p>
       <div class="speedline-header"></div>
     </header>
@@ -669,7 +625,7 @@
       </div>
     </section>
 
-    <!-- SECTION 3.5: 실제 리포트 예시 (네가 준 코드 내용 삽입) -->
+    <!-- SECTION 3.5: 실제 리포트 예시 -->
     <section class="section" id="sample-report">
       <h2><span class="icon">📊</span>실제 주간 보고서 예시</h2>
       <p style="margin-bottom:8px;">
@@ -687,7 +643,7 @@
         <p>
           · 이번 주 수업일: 3회<br/>
           · 결석 0회 / 지각 0회 / 조퇴 0회<br/>
-          · 수업 태도: 매우 좋음 (수업 내내 집중력이 좋고, 모르는 부분을 바로 질문하는 편입니다.)
+          · 수업 태도: 매우 좋음 (수업 내내 집중력이 좋고, 모르는 부분은 바로 질문하는 편입니다.)
         </p>
 
         <div class="sample-divider"></div>
@@ -809,7 +765,6 @@
         <a href="#" class="btn btn-primary" target="_blank">
           <span class="icon">💬</span>카카오톡으로 문의하기
         </a>
-        <!-- 이 버튼은 위의 샘플 섹션으로 점프 -->
         <a href="#sample-report" class="btn btn-ghost">
           <span class="icon">📄</span>주간 보고서 예시 바로 보기
         </a>
@@ -817,7 +772,7 @@
     </section>
 
     <footer>
-      RTM 네온 스타일 주간 보고서 안내 페이지 · 문구 및 구성은 학원 운영 방식에 맞게 자유롭게 수정하셔도 됩니다.
+      RTM 주간 보고서 안내 페이지 · 문구 및 구성은 학원 운영 방식에 맞게 자유롭게 수정하셔도 됩니다.
     </footer>
   </div>
 </body>
