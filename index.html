@@ -5,6 +5,11 @@
   <title>RTM 주간 학습 보고서</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+  <!-- 📌 모바일 글씨체 문제 해결: Noto Sans KR 로딩 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+
   <style>
     :root {
       --bg: #f5f7ff;
@@ -12,19 +17,23 @@
       --text-main: #0f172a;
       --text-sub: #4b5563;
       --border: #d4d4dd;
-
       --sky: #e0f2ff;
       --sky-border: #bfdbfe;
       --primary: #0ea5e9;
       --secondary: #6366f1;
     }
 
+    /* 📌 모든 기기에서 폰트 부드럽게 */
+    html {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { height: 100%; }
-    html { scroll-behavior: smooth; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+      font-family: "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background:
         radial-gradient(circle at top, rgba(59,130,246,0.18), transparent 60%),
         var(--bg);
@@ -48,7 +57,6 @@
       justify-content: space-between;
       margin-bottom: 18px;
     }
-
     .logo {
       font-size: 18px;
       font-weight: 800;
@@ -57,7 +65,7 @@
       color: var(--primary);
     }
 
-    /* ⭐ 모바일 최적화 상단 고정 헤더 */
+    /* 📌 상단 고정 헤더 */
     .sticky-header {
       position: sticky;
       top: 0;
@@ -136,7 +144,7 @@
       color: var(--text-sub);
     }
 
-    /************ 📱 모바일 최적화 ************/
+    /* 📱 모바일 최적화 */
     @media (max-width: 480px) {
       h1 { font-size: 22px; }
       h2 { font-size: 17px; }
@@ -150,7 +158,7 @@
 
     .hidden { display: none; }
 
-    /************ 📱 터치 UX 향상 버튼 ************/
+    /* 📌 모바일 터치 UX 강화 */
     .btn {
       padding: 12px 18px;
       border-radius: 10px;
@@ -162,7 +170,7 @@
       margin-top: 10px;
     }
 
-    /************ 📱 아코디언 ************/
+    /* 📌 아코디언 */
     .accordion-toggle {
       font-size: 14px;
       color: #0ea5e9;
@@ -174,7 +182,7 @@
       margin-top: 8px;
     }
 
-    /************ 📱 스켈레톤 로딩 ************/
+    /* 📌 로딩 스켈레톤 */
     .skeleton {
       background: #e2e8f0;
       height: 16px;
@@ -224,7 +232,7 @@
 
     <div id="status" class="status"></div>
 
-    <!-- 학생 선택 전 -->
+    <!-- 학생 선택 화면 -->
     <div id="selector-view">
       <section class="section">
         <h2>🔐 접속 인증</h2>
@@ -281,203 +289,186 @@
     </footer>
   </div>
 
-<script>
-  // 간단 잠금용 PIN
-  const ACCESS_PIN = "4925";
+  <script>
+    const ACCESS_PIN = "4925";
 
-  const selectorView = document.getElementById('selector-view');
-  const reportView   = document.getElementById('report-view');
-  const statusEl     = document.getElementById('status');
-  const metaLine     = document.getElementById('meta-line');
-  const stickyInfo   = document.getElementById('sticky-info');
+    const selectorView = document.getElementById('selector-view');
+    const reportView   = document.getElementById('report-view');
+    const statusEl     = document.getElementById('status');
+    const metaLine     = document.getElementById('meta-line');
+    const stickyInfo   = document.getElementById('sticky-info');
 
-  const pinInput = document.getElementById('pin-input');
-  const pinBtn   = document.getElementById('pin-btn');
-  const pinMsg   = document.getElementById('pin-msg');
-  const studentSelectSection = document.getElementById('student-select-section');
-  const studentSelect = document.getElementById('student-select');
-  const goReportBtn   = document.getElementById('go-report-btn');
+    const pinInput = document.getElementById('pin-input');
+    const pinBtn   = document.getElementById('pin-btn');
+    const pinMsg   = document.getElementById('pin-msg');
+    const studentSelectSection = document.getElementById('student-select-section');
+    const studentSelect = document.getElementById('student-select');
+    const goReportBtn   = document.getElementById('go-report-btn');
 
-  const skeleton = document.getElementById('skeleton');
+    const skeleton = document.getElementById('skeleton');
 
-  function showSelector() {
-    selectorView.classList.remove('hidden');
-    reportView.classList.add('hidden');
-    stickyInfo.style.display = "none";
-    metaLine.textContent = '학생을 선택하시면 해당 학생의 주간 학습 보고서를 확인하실 수 있습니다.';
-  }
-
-  function showReport() {
-    selectorView.classList.add('hidden');
-    reportView.classList.remove('hidden');
-    stickyInfo.style.display = "block";
-  }
-
-  function getStudentIdFromUrl() {
-    const params = new URLSearchParams(window.location.search);
-    return params.get('student');
-  }
-
-  // 학생 목록 로딩
-  async function loadStudentList() {
-    try {
-      const res = await fetch('data/students.json');
-      if (!res.ok) return;
-      const list = await res.json();
-
-      studentSelect.innerHTML = '<option value="">학생을 선택해 주세요</option>';
-
-      list.forEach(s => {
-        const opt = document.createElement('option');
-        opt.value = s.id;
-        opt.textContent = `${s.grade} ${s.name}`;
-        studentSelect.appendChild(opt);
-      });
-    } catch (e) {
-      console.error(e);
+    function showSelector() {
+      selectorView.classList.remove('hidden');
+      reportView.classList.add('hidden');
+      stickyInfo.style.display = "none";
+      metaLine.textContent = '학생을 선택하시면 해당 학생의 주간 학습 보고서를 확인하실 수 있습니다.';
     }
-  }
 
-  // JSON 안전 접근
-  const safe = (v) => (v === undefined || v === null ? '' : v);
+    function showReport() {
+      selectorView.classList.add('hidden');
+      reportView.classList.remove('hidden');
+      stickyInfo.style.display = "block";
+    }
 
-  // 보고서 로딩
-  async function loadReport(studentId) {
-    statusEl.textContent = '로딩 중입니다...';
-    skeleton.classList.remove('hidden');
-    reportView.classList.add('hidden');
+    function getStudentIdFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('student');
+    }
 
-    try {
-      const res = await fetch(`data/${studentId}.json`);
-      if (!res.ok) {
-        statusEl.textContent = `해당 학생 데이터를 찾을 수 없습니다. (data/${studentId}.json)`;
-        showSelector();
-        skeleton.classList.add('hidden');
-        return;
+    async function loadStudentList() {
+      try {
+        const res = await fetch('data/students.json');
+        if (!res.ok) return;
+        const list = await res.json();
+
+        studentSelect.innerHTML = '<option value="">학생을 선택해 주세요</option>';
+
+        list.forEach(s => {
+          const opt = document.createElement('option');
+          opt.value = s.id;
+          opt.textContent = `${s.grade} ${s.name}`;
+          studentSelect.appendChild(opt);
+        });
+      } catch (e) {
+        console.error(e);
       }
-
-      const data = await res.json();
-      statusEl.textContent = '';
-
-      // 상단 정보
-      metaLine.textContent =
-        `${safe(data.week)} · ${safe(data.grade)} ${safe(data.studentName)} 학생 · 과목: ${safe(data.subject)}`;
-
-      stickyInfo.textContent =
-        `${safe(data.studentName)} 학생 · ${safe(data.week)}`;
-
-      // 출결
-      const att = data.attendance || {};
-      document.getElementById('attendance').innerHTML =
-        `· 이번 주 수업일: ${safe(att.totalClasses)}<br/>
-         · 결석 ${safe(att.absent)}회 / 지각 ${safe(att.late)}회 / 조퇴 ${safe(att.earlyLeave)}회<br/>
-         · 수업 태도: ${safe(att.attitude)}`;
-
-      // 진도
-      const prog = data.progress || {};
-      document.getElementById('progress').innerHTML =
-        `· 학습 단원: ${safe(prog.unit)}<br/>
-         · 상세 진도: ${safe(prog.detail)}<br/>
-         · 이해도: ${safe(prog.understanding)}`;
-
-      // 숙제
-      const hw = data.homework || {};
-      document.getElementById('homework').innerHTML =
-        `· 숙제 분량: ${safe(hw.amount)}<br/>
-         · 제출 여부: ${safe(hw.submission)}<br/>
-         · 수행률: ${safe(hw.completion)}<br/>
-         · 정답률: ${safe(hw.correct)}<br/>
-         · 코멘트: ${safe(hw.comment)}`;
-
-      // 테스트
-      const test = data.test || {};
-      document.getElementById('test').innerHTML =
-        `· 테스트 종류: ${safe(test.type)}<br/>
-         · 시험 일자: ${safe(test.date)}<br/>
-         · 점수: ${safe(test.score)}점 / ${safe(test.total)}점 (반 평균 ${safe(test.classAverage)}점)<br/>
-         · 상대 위치: ${safe(test.rank)}<br/>
-         · 해석: ${safe(test.analysis)}`;
-
-      // 코멘트
-      const com = data.comment || {};
-      document.getElementById('comment-summary').textContent = safe(com.summary);
-      document.getElementById('comment-good').textContent    = `① 잘한 점: ${safe(com.good)}`;
-      document.getElementById('comment-need').textContent    = `② 보완이 필요한 부분: ${safe(com.need)}`;
-      document.getElementById('comment-plan').textContent    = `③ 다음 주 지도 계획: ${safe(com.plan)}`;
-
-      skeleton.classList.add('hidden');
-      showReport();
-
-      // 아코디언 기능 생성
-      setupAccordion();
-
-    } catch (e) {
-      console.error(e);
-      statusEl.textContent = '데이터를 불러오는 중 오류가 발생했습니다.';
-      skeleton.classList.add('hidden');
     }
-  }
 
-  // 아코디언 기능
-  function setupAccordion() {
-    document.querySelectorAll('.r-section').forEach(sec => {
-      const title = sec.querySelector('h2');
-      const content = sec.querySelector('.accordion-content');
+    const safe = v => (v === undefined || v === null ? '' : v);
 
-      if (!title || !content) return;
+    async function loadReport(studentId) {
+      statusEl.textContent = '로딩 중입니다...';
+      skeleton.classList.remove('hidden');
+      reportView.classList.add('hidden');
 
-      // 토글 버튼 생성
-      const toggle = document.createElement('div');
-      toggle.className = 'accordion-toggle';
-      toggle.textContent = '내용 보기 ▼';
+      try {
+        const res = await fetch(`data/${studentId}.json`);
+        if (!res.ok) {
+          statusEl.textContent = `해당 학생 데이터를 찾을 수 없습니다. (data/${studentId}.json)`;
+          showSelector();
+          skeleton.classList.add('hidden');
+          return;
+        }
 
-      // 맨 아래에 삽입
-      sec.insertBefore(toggle, content);
+        const data = await res.json();
+        statusEl.textContent = '';
 
-      toggle.addEventListener('click', () => {
-        const open = content.style.display === 'block';
-        content.style.display = open ? 'none' : 'block';
-        toggle.textContent = open ? '내용 보기 ▼' : '접기 ▲';
+        metaLine.textContent =
+          `${safe(data.week)} · ${safe(data.grade)} ${safe(data.studentName)} 학생 · 과목: ${safe(data.subject)}`;
+
+        stickyInfo.textContent =
+          `${safe(data.studentName)} 학생 · ${safe(data.week)}`;
+
+        const att = data.attendance || {};
+        document.getElementById('attendance').innerHTML =
+          `· 이번 주 수업일: ${safe(att.totalClasses)}<br/>
+           · 결석 ${safe(att.absent)}회 / 지각 ${safe(att.late)}회 / 조퇴 ${safe(att.earlyLeave)}회<br/>
+           · 수업 태도: ${safe(att.attitude)}`;
+
+        const prog = data.progress || {};
+        document.getElementById('progress').innerHTML =
+          `· 학습 단원: ${safe(prog.unit)}<br/>
+           · 상세 진도: ${safe(prog.detail)}<br/>
+           · 이해도: ${safe(prog.understanding)}`;
+
+        const hw = data.homework || {};
+        document.getElementById('homework').innerHTML =
+          `· 숙제 분량: ${safe(hw.amount)}<br/>
+           · 제출 여부: ${safe(hw.submission)}<br/>
+           · 수행률: ${safe(hw.completion)}<br/>
+           · 정답률: ${safe(hw.correct)}<br/>
+           · 코멘트: ${safe(hw.comment)}`;
+
+        const test = data.test || {};
+        document.getElementById('test').innerHTML =
+          `· 테스트 종류: ${safe(test.type)}<br/>
+           · 시험 일자: ${safe(test.date)}<br/>
+           · 점수: ${safe(test.score)}점 / ${safe(test.total)}점 (반 평균 ${safe(test.classAverage)}점)<br/>
+           · 상대 위치: ${safe(test.rank)}<br/>
+           · 해석: ${safe(test.analysis)}`;
+
+        const com = data.comment || {};
+        document.getElementById('comment-summary').textContent = safe(com.summary);
+        document.getElementById('comment-good').textContent    = `① 잘한 점: ${safe(com.good)}`;
+        document.getElementById('comment-need').textContent    = `② 보완이 필요한 부분: ${safe(com.need)}`;
+        document.getElementById('comment-plan').textContent    = `③ 다음 주 지도 계획: ${safe(com.plan)}`;
+
+        skeleton.classList.add('hidden');
+        showReport();
+
+        setupAccordion();
+
+      } catch (e) {
+        console.error(e);
+        statusEl.textContent = '데이터를 불러오는 중 오류가 발생했습니다.';
+        skeleton.classList.add('hidden');
+      }
+    }
+
+    function setupAccordion() {
+      document.querySelectorAll('.r-section').forEach(sec => {
+        const title = sec.querySelector('h2');
+        const content = sec.querySelector('.accordion-content');
+
+        if (!title || !content) return;
+
+        const toggle = document.createElement('div');
+        toggle.className = 'accordion-toggle';
+        toggle.textContent = '내용 보기 ▼';
+
+        sec.insertBefore(toggle, content);
+
+        toggle.addEventListener('click', () => {
+          const open = content.style.display === 'block';
+          content.style.display = open ? 'none' : 'block';
+          toggle.textContent = open ? '내용 보기 ▼' : '접기 ▲';
+        });
       });
-    });
-  }
-
-  // PIN 확인
-  pinBtn.addEventListener('click', () => {
-    const v = pinInput.value.trim();
-    if (v === ACCESS_PIN) {
-      localStorage.setItem('rtmWeeklyAuthorized', '1');
-      pinMsg.textContent = '';
-      studentSelectSection.classList.remove('hidden');
-      loadStudentList();
-    } else {
-      pinMsg.textContent = '비밀번호가 올바르지 않습니다.';
     }
-  });
 
-  // 학생 선택 후 이동
-  goReportBtn.addEventListener('click', () => {
-    const id = studentSelect.value;
-    if (!id) return;
-    window.location.href = `./?student=${encodeURIComponent(id)}`;
-  });
-
-  // 초기 진입
-  (function init() {
-    const studentId = getStudentIdFromUrl();
-    const authorized = localStorage.getItem('rtmWeeklyAuthorized') === '1';
-
-    if (studentId) {
-      loadReport(studentId);
-    } else {
-      showSelector();
-      if (authorized) {
+    pinBtn.addEventListener('click', () => {
+      const v = pinInput.value.trim();
+      if (v === ACCESS_PIN) {
+        localStorage.setItem('rtmWeeklyAuthorized', '1');
+        pinMsg.textContent = '';
         studentSelectSection.classList.remove('hidden');
         loadStudentList();
+      } else {
+        pinMsg.textContent = '비밀번호가 올바르지 않습니다.';
       }
-    }
-  })();
-</script>
+    });
+
+    goReportBtn.addEventListener('click', () => {
+      const id = studentSelect.value;
+      if (!id) return;
+      window.location.href = `./?student=${encodeURIComponent(id)}`;
+    });
+
+    (function init() {
+      const studentId = getStudentIdFromUrl();
+      const authorized = localStorage.getItem('rtmWeeklyAuthorized') === '1';
+
+      if (studentId) {
+        loadReport(studentId);
+      } else {
+        showSelector();
+        if (authorized) {
+          studentSelectSection.classList.remove('hidden');
+          loadStudentList();
+        }
+      }
+    })();
+  </script>
 
 </body>
 </html>
