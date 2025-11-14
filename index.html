@@ -5,10 +5,17 @@
   <title>RTM 주간 학습 보고서</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- 📌 모바일 글씨체 문제 해결: Noto Sans KR 로딩 -->
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0ea5e9">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
     :root {
@@ -17,20 +24,16 @@
       --text-main: #0f172a;
       --text-sub: #4b5563;
       --border: #d4d4dd;
+
       --sky: #e0f2ff;
       --sky-border: #bfdbfe;
       --primary: #0ea5e9;
       --secondary: #6366f1;
     }
 
-    /* 📌 모든 기기에서 폰트 부드럽게 */
-    html {
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { height: 100%; }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
 
     body {
       font-family: "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -42,13 +45,10 @@
       overflow-x: hidden;
     }
 
-    a { text-decoration: none; color: inherit; }
-
     .page {
       max-width: 1024px;
       margin: 0 auto;
       padding: 26px 18px 60px;
-      position: relative;
     }
 
     .topbar {
@@ -57,6 +57,7 @@
       justify-content: space-between;
       margin-bottom: 18px;
     }
+
     .logo {
       font-size: 18px;
       font-weight: 800;
@@ -65,18 +66,11 @@
       color: var(--primary);
     }
 
-    /* 📌 상단 고정 헤더 */
-    .sticky-header {
-      position: sticky;
-      top: 0;
-      background: #f5f7ff;
-      padding: 10px 6px;
-      z-index: 999;
-      border-bottom: 1px solid #d1d5db;
-      font-size: 13px;
-      color: #334155;
-      font-weight: 600;
-      display: none;
+    .top-tagline {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--text-sub);
     }
 
     header {
@@ -113,21 +107,10 @@
       color: var(--secondary);
     }
 
-    header p {
-      font-size: 14px;
-      color: var(--text-sub);
-    }
-
-    .meta-line {
-      margin-top: 10px;
-      font-size: 13px;
-      color: var(--text-sub);
-    }
-
     .section {
       background: var(--card-bg);
       border-radius: 16px;
-      padding: 20px 20px 18px;
+      padding: 20px;
       margin-bottom: 20px;
       border: 1px solid var(--border);
       box-shadow: 0 10px 24px rgba(15,23,42,0.06);
@@ -136,161 +119,245 @@
     .section h2 {
       font-size: 18px;
       margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
       color: #020617;
     }
 
-    .section p {
-      font-size: 14px;
-      color: var(--text-sub);
+    .accordion-toggle {
+      margin-top: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--primary);
+      cursor: pointer;
     }
 
-    /* 📱 모바일 최적화 */
-    @media (max-width: 480px) {
-      h1 { font-size: 22px; }
-      h2 { font-size: 17px; }
-      .section { padding: 16px 14px; margin-bottom: 16px; }
-      .page { padding: 18px 12px 40px; }
-      .badge { font-size: 10px; padding: 5px 14px; }
-      .slogan-main { font-size: 12px; letter-spacing: 0.15em; }
-      p, li { font-size: 13px; line-height: 1.55; }
-      .sticky-header { display: block; }
+    .accordion-content {
+      display: none;
+      margin-top: 10px;
     }
 
     .hidden { display: none; }
 
-    /* 📌 모바일 터치 UX 강화 */
-    .btn {
-      padding: 12px 18px;
-      border-radius: 10px;
-      background: var(--sky);
-      border: 1px solid var(--sky-border);
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 600;
-      margin-top: 10px;
-    }
-
-    /* 📌 아코디언 */
-    .accordion-toggle {
-      font-size: 14px;
-      color: #0ea5e9;
-      cursor: pointer;
-      margin-top: 6px;
-    }
-    .accordion-content {
-      display: none;
-      margin-top: 8px;
-    }
-
-    /* 📌 로딩 스켈레톤 */
+    /* 로딩 스켈레톤 */
     .skeleton {
-      background: #e2e8f0;
-      height: 16px;
-      width: 100%;
-      border-radius: 6px;
-      margin-bottom: 6px;
-      animation: pulse 1.4s infinite ease-in-out;
+      height: 140px;
+      border-radius: 14px;
+      background: linear-gradient(90deg, #e2e8f0 0%, #f1f5f9 50%, #e2e8f0 100%);
+      animation: pulse 1s infinite ease-in-out;
+      margin-bottom: 10px;
     }
 
     @keyframes pulse {
-      0% { opacity: .6; }
-      50% { opacity: 1; }
-      100% { opacity: .6; }
+      0% { opacity: 1; }
+      50% { opacity: 0.4; }
+      100% { opacity: 1; }
     }
 
-    footer {
-      margin-top: 22px;
-      text-align: center;
-      font-size: 11px;
-      color: #6b7280;
+    /* PWA print */
+    @media print {
+      .topbar, #selector-view, footer, #sticky-info { display: none !important; }
+      body { background: white !important; }
+      .section { box-shadow: none !important; }
     }
   </style>
 </head>
 
 <body>
-  <div class="sticky-header" id="sticky-info"></div>
-
   <div class="page">
+
+    <!-- 상단바 -->
     <div class="topbar">
       <div class="logo">RTM MATH LAB</div>
+      <div class="top-tagline">CONCEPT · ACCURACY · APPLICATION</div>
     </div>
 
+    <!-- 고정 정보 -->
+    <div id="sticky-info" style="
+      position:sticky; top:0; left:0; right:0;
+      background:#f5f7ffdd;
+      backdrop-filter:blur(8px);
+      padding:6px 0 8px;
+      font-size:13px;
+      text-align:center;
+      font-weight:600;
+      z-index:50;
+      display:none;
+    ">
+    </div>
+
+    <!-- 헤더 -->
     <header>
       <div class="badge">WEEKLY PERFORMANCE REPORT</div>
       <h1>주간 학습 보고서</h1>
       <div class="slogan-main">RACE TO MIRACLE</div>
-      <p>한 주 동안의 수업 내용을 정확하게 정리한 리포트입니다.</p>
-      <div class="meta-line" id="meta-line"></div>
+      <p id="meta-line" style="font-size:13px; color:#4b5563;"></p>
     </header>
 
-    <!-- 스켈레톤 -->
+    <div id="status" style="text-align:center; color:#b91c1c; margin-bottom:12px;"></div>
+
+    <!-- ===== 학생 선택 화면 ===== -->
+    <div id="selector-view">
+
+      <!-- PIN -->
+      <div class="section">
+        <h2>🔐 접속 인증</h2>
+        <div style="padding:10px 0;">
+          <label for="pin-input" style="font-size:13px; font-weight:600;">공유 비밀번호</label>
+          <input id="pin-input" type="password" maxlength="10"
+            style="width:100%; padding:8px; border-radius:8px; border:1px solid #cbd5e1;">
+          <button id="pin-btn"
+            style="margin-top:12px; width:100%; padding:10px; border-radius:8px; background:var(--primary); border:none; color:white; font-weight:700;">
+            확인
+          </button>
+          <div id="pin-msg" style="text-align:center; color:#b91c1c; margin-top:6px; font-size:13px;"></div>
+        </div>
+      </div>
+
+      <!-- 학생 목록 -->
+      <div class="section hidden" id="student-select-section">
+        <h2>👨‍🎓 학생 선택</h2>
+        <label style="font-size:13px; font-weight:600;">학생 이름 선택</label>
+        <select id="student-select"
+          style="width:100%; margin-top:6px; padding:8px; border-radius:8px; border:1px solid #cbd5e1;">
+          <option>학생을 선택하세요</option>
+        </select>
+
+        <button id="go-report-btn"
+          style="margin-top:14px; width:100%; padding:10px; border-radius:8px;
+          background:var(--primary); border:none; color:white; font-weight:700;">
+          보고서 열기
+        </button>
+
+        <div style="margin-top:10px; font-size:11px; color:#6b7280;">
+          직접 접속: /?student=학생코드
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== 로딩 스켈레톤 ===== -->
     <div id="skeleton" class="hidden">
       <div class="skeleton"></div>
       <div class="skeleton"></div>
-      <div class="skeleton" style="width:70%;"></div>
+      <div class="skeleton"></div>
     </div>
 
-    <div id="status" class="status"></div>
-
-    <!-- 학생 선택 화면 -->
-    <div id="selector-view">
-      <section class="section">
-        <h2>🔐 접속 인증</h2>
-        <input id="pin-input" type="password" maxlength="10" placeholder="4자리 비밀번호 입력" />
-        <button class="btn" id="pin-btn">확인</button>
-        <div id="pin-msg" class="status"></div>
-      </section>
-
-      <section class="section hidden" id="student-select-section">
-        <h2>👨‍🎓 학생 선택</h2>
-        <select id="student-select">
-          <option value="">학생을 선택해 주세요</option>
-        </select>
-        <button class="btn" id="go-report-btn">보고서 열기</button>
-      </section>
-    </div>
-
-    <!-- 학생 보고서 -->
+    <!-- ===== 리포트 화면 ===== -->
     <div id="report-view" class="hidden">
 
+            <!-- === 1. 출결 === -->
       <section class="section r-section">
-        <h2>🕒 1. 출결 현황</h2>
-        <div class="accordion-content"><p id="attendance"></p></div>
-      </section>
-
-      <section class="section r-section">
-        <h2>📚 2. 단원별 진도</h2>
-        <div class="accordion-content"><p id="progress"></p></div>
-      </section>
-
-      <section class="section r-section">
-        <h2>✏️ 3. 숙제 수행률</h2>
-        <div class="accordion-content"><p id="homework"></p></div>
-      </section>
-
-      <section class="section r-section">
-        <h2>📊 4. 테스트 결과</h2>
-        <div class="accordion-content"><p id="test"></p></div>
-      </section>
-
-      <section class="section r-section">
-        <h2>🧑‍🏫 5. 담임 종합 코멘트</h2>
+        <h2>🕒 출결 현황</h2>
         <div class="accordion-content">
-          <p id="comment-summary"></p>
-          <p id="comment-good"></p>
-          <p id="comment-need"></p>
+          <p id="attendance"></p>
+        </div>
+      </section>
+
+      <!-- === 2. 진도 === -->
+      <section class="section r-section">
+        <h2>📚 단원별 진도</h2>
+        <div class="accordion-content">
+          <p id="progress"></p>
+        </div>
+      </section>
+
+      <!-- === 3. 숙제 === -->
+      <section class="section r-section">
+        <h2>✏️ 숙제 수행률</h2>
+        <div class="accordion-content">
+          <p id="homework"></p>
+        </div>
+      </section>
+
+      <!-- === 4. 테스트 === -->
+      <section class="section r-section">
+        <h2>📊 테스트 결과</h2>
+        <div class="accordion-content">
+          <p id="test"></p>
+        </div>
+      </section>
+
+      <!-- === 5. 코멘트 === -->
+      <section class="section r-section">
+        <h2>🧑‍🏫 담임 종합 코멘트</h2>
+        <div class="accordion-content">
+          <p id="comment-summary" style="margin-bottom:10px; font-weight:600;"></p>
+
+          <p id="comment-good" style="margin-bottom:12px;"></p>
+          <p id="comment-need" style="margin-bottom:12px;"></p>
           <p id="comment-plan"></p>
         </div>
       </section>
-    </div>
 
-    <footer>
-      RTM 주간 보고서 © All rights reserved.
-    </footer>
-  </div>
+      <!-- === 6. 점수/숙제 그래프 === -->
+      <section class="section r-section">
+        <h2>📈 변화 그래프(자동)</h2>
+        <div class="accordion-content">
+          <canvas id="progressChart" style="margin-top:12px;"></canvas>
+        </div>
+      </section>
 
-  <script>
-    const ACCESS_PIN = "4925";
+      <!-- === PDF 다운로드 === -->
+      <section class="section">
+        <h2>🖨️ PDF 다운로드</h2>
+        <button onclick="window.print()"
+          style="margin-top:10px; width:100%; padding:10px; border-radius:10px;
+          background:#0ea5e9; border:none; color:white; font-weight:700;">
+          PDF로 저장하기
+        </button>
+      </section>
+
+      <!-- === FAQ === -->
+      <section class="section r-section">
+        <h2>❓ 자주 묻는 질문</h2>
+        <div class="accordion-content">
+          <p style="margin-bottom:10px;">
+            Q. 보고서를 못 받았습니다.<br>
+            A. 스팸함 또는 카카오톡 채널 친구추가 여부를 확인해 주세요.
+          </p>
+
+          <p>
+            Q. 보호자 연락처를 변경하고 싶습니다.<br>
+            A. 학생 이름 + 새 연락처를 보내주시면 즉시 반영됩니다.
+          </p>
+        </div>
+      </section>
+
+      <!-- === 문의 === -->
+      <section class="section r-section">
+        <h2>📞 문의 / 연락처</h2>
+        <div class="accordion-content">
+          <p>담당 선생님: <b>박원욱</b><br>
+             연락처: <b>010-2319-7526</b><br>
+             카카오톡 채널: <b>@RaceToMiracleMath</b>
+          </p>
+
+          <a href="https://open.kakao.com/o/gxBvHX1h"
+             style="margin-top:12px; display:block; padding:10px; background:#e0f2ff;
+             border-radius:10px; border:1px solid #bfdbfe; text-align:center; font-weight:700;">
+            💬 카카오톡으로 문의하기
+          </a>
+        </div>
+      </section>
+
+      <!-- === 뒤로가기 === -->
+      <section class="section">
+        <button onclick="location.href='./'"
+          style="width:100%; padding:10px; border-radius:10px;
+          background:#e0f2ff; border:1px solid #bfdbfe; font-weight:700;">
+          🔁 다른 학생 선택하기
+        </button>
+      </section>
+
+      <footer style="text-align:center; margin-top:20px; font-size:11px; color:#6b7280;">
+        RTM 주간 보고서 · 학생별 데이터는 매주 갱신됩니다.
+      </footer>
+    </div> <!-- report-view 끝 -->
+
+      <script>
+    /* ===== 기본 설정 ===== */
+    const ACCESS_PIN = "4925"; // 네가 원하는 4자리 비밀번호
 
     const selectorView = document.getElementById('selector-view');
     const reportView   = document.getElementById('report-view');
@@ -301,37 +368,44 @@
     const pinInput = document.getElementById('pin-input');
     const pinBtn   = document.getElementById('pin-btn');
     const pinMsg   = document.getElementById('pin-msg');
+
     const studentSelectSection = document.getElementById('student-select-section');
     const studentSelect = document.getElementById('student-select');
     const goReportBtn   = document.getElementById('go-report-btn');
 
     const skeleton = document.getElementById('skeleton');
 
-    function showSelector() {
-      selectorView.classList.remove('hidden');
-      reportView.classList.add('hidden');
-      stickyInfo.style.display = "none";
-      metaLine.textContent = '학생을 선택하시면 해당 학생의 주간 학습 보고서를 확인하실 수 있습니다.';
-    }
 
-    function showReport() {
-      selectorView.classList.add('hidden');
-      reportView.classList.remove('hidden');
-      stickyInfo.style.display = "block";
-    }
+    /* ===== 유틸 ===== */
+    function safe(v) { return (v === undefined || v === null) ? "" : v; }
 
     function getStudentIdFromUrl() {
       const params = new URLSearchParams(window.location.search);
       return params.get('student');
     }
 
+    function showSelector() {
+      selectorView.classList.remove('hidden');
+      reportView.classList.add('hidden');
+      stickyInfo.style.display = 'none';
+      metaLine.textContent = '학생을 선택하면 주간 보고서를 확인할 수 있습니다.';
+    }
+
+    function showReport() {
+      selectorView.classList.add('hidden');
+      reportView.classList.remove('hidden');
+      stickyInfo.style.display = 'block';
+    }
+
+
+    /* ===== 학생 목록 로드 ===== */
     async function loadStudentList() {
       try {
         const res = await fetch('data/students.json');
         if (!res.ok) return;
-        const list = await res.json();
 
-        studentSelect.innerHTML = '<option value="">학생을 선택해 주세요</option>';
+        const list = await res.json();
+        studentSelect.innerHTML = '<option value="">학생을 선택하세요</option>';
 
         list.forEach(s => {
           const opt = document.createElement('option');
@@ -339,135 +413,191 @@
           opt.textContent = `${s.grade} ${s.name}`;
           studentSelect.appendChild(opt);
         });
+
       } catch (e) {
-        console.error(e);
+        console.error("학생 목록 로딩 오류:", e);
       }
     }
 
-    const safe = v => (v === undefined || v === null ? '' : v);
 
-    async function loadReport(studentId) {
-      statusEl.textContent = '로딩 중입니다...';
-      skeleton.classList.remove('hidden');
-      reportView.classList.add('hidden');
+    /* ===== 변화 그래프 ===== */
+    function loadChart(history) {
+      const ctx = document.getElementById("progressChart");
 
-      try {
-        const res = await fetch(`data/${studentId}.json`);
-        if (!res.ok) {
-          statusEl.textContent = `해당 학생 데이터를 찾을 수 없습니다. (data/${studentId}.json)`;
-          showSelector();
-          skeleton.classList.add('hidden');
-          return;
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: history.weeks,
+          datasets: [
+            {
+              label: "점수 변화",
+              data: history.scores,
+              borderColor: "#0ea5e9",
+              backgroundColor: "rgba(14,165,233,0.2)",
+              tension: 0.3
+            },
+            {
+              label: "숙제 수행률(%)",
+              data: history.homeworkRate,
+              borderColor: "#6366f1",
+              backgroundColor: "rgba(99,102,241,0.2)",
+              tension: 0.3
+            }
+          ]
         }
-
-        const data = await res.json();
-        statusEl.textContent = '';
-
-        metaLine.textContent =
-          `${safe(data.week)} · ${safe(data.grade)} ${safe(data.studentName)} 학생 · 과목: ${safe(data.subject)}`;
-
-        stickyInfo.textContent =
-          `${safe(data.studentName)} 학생 · ${safe(data.week)}`;
-
-        const att = data.attendance || {};
-        document.getElementById('attendance').innerHTML =
-          `· 이번 주 수업일: ${safe(att.totalClasses)}<br/>
-           · 결석 ${safe(att.absent)}회 / 지각 ${safe(att.late)}회 / 조퇴 ${safe(att.earlyLeave)}회<br/>
-           · 수업 태도: ${safe(att.attitude)}`;
-
-        const prog = data.progress || {};
-        document.getElementById('progress').innerHTML =
-          `· 학습 단원: ${safe(prog.unit)}<br/>
-           · 상세 진도: ${safe(prog.detail)}<br/>
-           · 이해도: ${safe(prog.understanding)}`;
-
-        const hw = data.homework || {};
-        document.getElementById('homework').innerHTML =
-          `· 숙제 분량: ${safe(hw.amount)}<br/>
-           · 제출 여부: ${safe(hw.submission)}<br/>
-           · 수행률: ${safe(hw.completion)}<br/>
-           · 정답률: ${safe(hw.correct)}<br/>
-           · 코멘트: ${safe(hw.comment)}`;
-
-        const test = data.test || {};
-        document.getElementById('test').innerHTML =
-          `· 테스트 종류: ${safe(test.type)}<br/>
-           · 시험 일자: ${safe(test.date)}<br/>
-           · 점수: ${safe(test.score)}점 / ${safe(test.total)}점 (반 평균 ${safe(test.classAverage)}점)<br/>
-           · 상대 위치: ${safe(test.rank)}<br/>
-           · 해석: ${safe(test.analysis)}`;
-
-        const com = data.comment || {};
-        document.getElementById('comment-summary').textContent = safe(com.summary);
-        document.getElementById('comment-good').textContent    = `① 잘한 점: ${safe(com.good)}`;
-        document.getElementById('comment-need').textContent    = `② 보완이 필요한 부분: ${safe(com.need)}`;
-        document.getElementById('comment-plan').textContent    = `③ 다음 주 지도 계획: ${safe(com.plan)}`;
-
-        skeleton.classList.add('hidden');
-        showReport();
-
-        setupAccordion();
-
-      } catch (e) {
-        console.error(e);
-        statusEl.textContent = '데이터를 불러오는 중 오류가 발생했습니다.';
-        skeleton.classList.add('hidden');
-      }
+      });
     }
 
+
+    /* ===== 아코디언 기능 ===== */
     function setupAccordion() {
-      document.querySelectorAll('.r-section').forEach(sec => {
-        const title = sec.querySelector('h2');
-        const content = sec.querySelector('.accordion-content');
+      document.querySelectorAll(".r-section").forEach(sec => {
+        const content = sec.querySelector(".accordion-content");
+        if (!content) return;
 
-        if (!title || !content) return;
-
-        const toggle = document.createElement('div');
-        toggle.className = 'accordion-toggle';
-        toggle.textContent = '내용 보기 ▼';
+        const toggle = document.createElement("div");
+        toggle.className = "accordion-toggle";
+        toggle.textContent = "내용 보기 ▼";
 
         sec.insertBefore(toggle, content);
 
-        toggle.addEventListener('click', () => {
-          const open = content.style.display === 'block';
-          content.style.display = open ? 'none' : 'block';
-          toggle.textContent = open ? '내용 보기 ▼' : '접기 ▲';
+        toggle.addEventListener("click", () => {
+          const open = content.style.display === "block";
+          content.style.display = open ? "none" : "block";
+          toggle.textContent = open ? "내용 보기 ▼" : "접기 ▲";
         });
       });
     }
 
-    pinBtn.addEventListener('click', () => {
+
+    /* ===== 학생 리포트 로딩 ===== */
+    async function loadReport(studentId) {
+      statusEl.textContent = "로딩 중입니다...";
+      skeleton.classList.remove("hidden");
+      reportView.classList.add("hidden");
+
+      try {
+        const res = await fetch(`data/${studentId}.json`);
+
+        if (!res.ok) {
+          statusEl.textContent = `해당 학생 데이터가 없습니다 (data/${studentId}.json)`;
+          skeleton.classList.add("hidden");
+          return;
+        }
+
+        const data = await res.json();
+        statusEl.textContent = "";
+
+        /* 상단 정보 */
+        metaLine.textContent =
+          `${safe(data.week)} · ${safe(data.grade)} ${safe(data.studentName)} 학생 · 과목 ${safe(data.subject)}`;
+
+        stickyInfo.textContent = `${safe(data.studentName)} 학생 · ${safe(data.week)}`;
+
+
+        /* 출결 */
+        const att = data.attendance || {};
+        document.getElementById("attendance").innerHTML = `
+          · 수업일: ${safe(att.totalClasses)}<br>
+          · 결석 ${safe(att.absent)}회 / 지각 ${safe(att.late)}회 / 조퇴 ${safe(att.earlyLeave)}회<br>
+          · 태도: ${safe(att.attitude)}
+        `;
+
+        /* 진도 */
+        const prog = data.progress || {};
+        document.getElementById("progress").innerHTML = `
+          · 단원: ${safe(prog.unit)}<br>
+          · 상세: ${safe(prog.detail)}<br>
+          · 이해도: ${safe(prog.understanding)}
+        `;
+
+        /* 숙제 */
+        const hw = data.homework || {};
+        document.getElementById("homework").innerHTML = `
+          · 분량: ${safe(hw.amount)}<br>
+          · 제출: ${safe(hw.submission)}<br>
+          · 수행률: ${safe(hw.completion)}<br>
+          · 정답률: ${safe(hw.correct)}<br>
+          · 코멘트: ${safe(hw.comment)}
+        `;
+
+        /* 테스트 */
+        const test = data.test || {};
+        document.getElementById("test").innerHTML = `
+          · 종류: ${safe(test.type)}<br>
+          · 날짜: ${safe(test.date)}<br>
+          · 점수: ${safe(test.score)} / ${safe(test.total)} (평균 ${safe(test.classAverage)})<br>
+          · 위치: ${safe(test.rank)}<br>
+          · 분석: ${safe(test.analysis)}
+        `;
+
+        /* 코멘트 */
+        const com = data.comment || {};
+        document.getElementById("comment-summary").textContent = safe(com.summary);
+        document.getElementById("comment-good").textContent    = `① 잘한 점: ${safe(com.good)}`;
+        document.getElementById("comment-need").textContent    = `② 보완할 점: ${safe(com.need)}`;
+        document.getElementById("comment-plan").textContent    = `③ 다음주 계획: ${safe(com.plan)}`;
+
+        /* 그래프 */
+        if (data.history) loadChart(data.history);
+
+        skeleton.classList.add("hidden");
+        showReport();
+        setupAccordion();
+
+      } catch (e) {
+        console.error("로드오류:", e);
+        statusEl.textContent = "오류 발생";
+        skeleton.classList.add("hidden");
+      }
+    }
+
+
+    /* ===== PIN 확인 ===== */
+    pinBtn.addEventListener("click", () => {
       const v = pinInput.value.trim();
+
       if (v === ACCESS_PIN) {
-        localStorage.setItem('rtmWeeklyAuthorized', '1');
-        pinMsg.textContent = '';
-        studentSelectSection.classList.remove('hidden');
+        pinMsg.textContent = "";
+        localStorage.setItem("rtmAuth", "1");
+        studentSelectSection.classList.remove("hidden");
         loadStudentList();
       } else {
-        pinMsg.textContent = '비밀번호가 올바르지 않습니다.';
+        pinMsg.textContent = "비밀번호가 올바르지 않습니다.";
       }
     });
 
-    goReportBtn.addEventListener('click', () => {
+
+    /* ===== 학생 선택 → 페이지 이동 ===== */
+    goReportBtn.addEventListener("click", () => {
       const id = studentSelect.value;
       if (!id) return;
-      window.location.href = `./?student=${encodeURIComponent(id)}`;
+      location.href = `./?student=${id}`;
     });
 
+
+    /* ===== 초기 실행 ===== */
     (function init() {
       const studentId = getStudentIdFromUrl();
-      const authorized = localStorage.getItem('rtmWeeklyAuthorized') === '1';
+      const authorized = localStorage.getItem("rtmAuth") === "1";
 
       if (studentId) {
         loadReport(studentId);
       } else {
         showSelector();
         if (authorized) {
-          studentSelectSection.classList.remove('hidden');
+          studentSelectSection.classList.remove("hidden");
           loadStudentList();
         }
       }
     })();
+  </script>
+
+  <!-- PWA 서비스워커 등록 -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("sw.js");
+    }
   </script>
 
 </body>
