@@ -2,20 +2,20 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>RTM 주간 학습 보고서 안내 (Light)</title>
+  <title>RTM 주간 학습 보고서 안내 (Neon Light)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <style>
-    /* ===== 기본 색 (화이트) ===== */
+    /* ===== RTM WHITE + NEON THEME ===== */
     :root {
-      --bg: #f5f5f5;
+      --bg: #f5f7ff;
       --card-bg: #ffffff;
-      --text-main: #111827;
+      --text-main: #0f172a;
       --text-sub: #4b5563;
-      --border: #e5e7eb;
+      --border: #d4d4dd;
 
-      --primary: #0ea5e9;
-      --secondary: #6366f1;
+      --neon-cyan: #00cfff;
+      --neon-purple: #7c3aed;
       --accent: #0f766e;
     }
 
@@ -25,7 +25,9 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
-      background: var(--bg);
+      background:
+        radial-gradient(circle at top, rgba(59,130,246,0.25), transparent 60%),
+        var(--bg);
       color: var(--text-main);
       line-height: 1.6;
       overflow-x: hidden;
@@ -37,9 +39,10 @@
       max-width: 1024px;
       margin: 0 auto;
       padding: 26px 18px 60px;
+      position: relative;
     }
 
-    /* ===== 상단 영역 ===== */
+    /* ===== TOP BAR / LOGO ===== */
     .topbar {
       display: flex;
       align-items: center;
@@ -55,21 +58,26 @@
       font-weight: 800;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: var(--primary);
+      color: var(--neon-cyan);
+      text-shadow:
+        0 0 6px rgba(0,207,255,0.8),
+        0 0 14px rgba(0,207,255,0.8);
     }
 
     .logo-mark {
       width: 26px;
       height: 26px;
       border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, #ffffff, var(--primary));
-      box-shadow: 0 0 8px rgba(14,165,233,0.4);
+      background: radial-gradient(circle at 30% 30%, #ffffff, var(--neon-cyan), #0369a1);
+      box-shadow:
+        0 0 8px rgba(0,207,255,0.9),
+        0 0 18px rgba(0,207,255,0.8);
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 13px;
       font-weight: 900;
-      color: #0b1120;
+      color: #020617;
     }
 
     .top-tagline {
@@ -79,9 +87,11 @@
       color: var(--text-sub);
     }
 
+    /* ===== HEADER ===== */
     header {
       text-align: center;
       margin-bottom: 30px;
+      position: relative;
     }
 
     .badge {
@@ -89,12 +99,18 @@
       font-size: 11px;
       padding: 5px 14px;
       border-radius: 999px;
-      background: linear-gradient(90deg, rgba(14,165,233,0.08), rgba(99,102,241,0.12));
-      color: var(--primary);
+      background: linear-gradient(90deg, rgba(0,207,255,0.1), rgba(124,58,237,0.18));
+      color: var(--neon-cyan);
       margin-bottom: 10px;
       font-weight: 600;
       letter-spacing: 0.12em;
-      border: 1px solid rgba(14,165,233,0.5);
+      border: 1px solid rgba(0,207,255,0.8);
+      text-shadow:
+        0 0 6px rgba(0,207,255,0.8),
+        0 0 16px rgba(124,58,237,0.7);
+      box-shadow:
+        0 0 10px rgba(0,207,255,0.4),
+        0 0 20px rgba(124,58,237,0.3);
     }
 
     h1 {
@@ -102,7 +118,10 @@
       margin-bottom: 6px;
       font-weight: 900;
       letter-spacing: -0.02em;
-      color: #0f172a;
+      color: #020617;
+      text-shadow:
+        0 0 4px rgba(255,255,255,0.9),
+        0 0 10px rgba(15,23,42,0.2);
     }
 
     .slogan-main {
@@ -110,7 +129,10 @@
       margin-bottom: 10px;
       text-transform: uppercase;
       letter-spacing: 0.32em;
-      color: var(--secondary);
+      color: var(--neon-purple);
+      text-shadow:
+        0 0 6px rgba(124,58,237,0.9),
+        0 0 18px rgba(124,58,237,0.8);
     }
 
     header p {
@@ -119,25 +141,60 @@
     }
 
     .highlight {
-      color: var(--primary);
+      color: var(--neon-cyan);
       font-weight: 700;
+      text-shadow:
+        0 0 5px rgba(0,207,255,0.9),
+        0 0 12px rgba(0,207,255,0.7);
     }
 
     .speedline-header {
       width: 100%;
       height: 2px;
       margin: 18px auto 0;
+      position: relative;
+      overflow: hidden;
       background: linear-gradient(90deg, transparent, #d1d5db, transparent);
     }
 
-    /* ===== 공통 카드 섹션 ===== */
+    .speedline-header::before {
+      content: "";
+      position: absolute;
+      left: -30%;
+      top: 0;
+      width: 60%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, var(--neon-cyan), var(--neon-purple), transparent);
+      animation: run-line 2.4s linear infinite;
+      opacity: 0.9;
+    }
+
+    /* ===== SECTION / CARD ===== */
     .section {
-      background: var(--card-bg);
+      background: radial-gradient(circle at top left, rgba(0,207,255,0.08), transparent 55%),
+                  var(--card-bg);
       border-radius: 16px;
       padding: 20px 20px 18px;
       margin-bottom: 20px;
       border: 1px solid var(--border);
-      box-shadow: 0 10px 24px rgba(15,23,42,0.06);
+      box-shadow:
+        0 16px 32px rgba(15,23,42,0.12),
+        0 0 10px rgba(148,163,184,0.25);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .section::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -25%;
+      width: 60%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--neon-cyan), var(--neon-purple), transparent);
+      opacity: 0.8;
+      animation: run-line 3s linear infinite;
+      animation-delay: -1s;
     }
 
     .section h2 {
@@ -146,7 +203,8 @@
       gap: 8px;
       font-size: 18px;
       margin-bottom: 8px;
-      color: #0f172a;
+      color: #020617;
+      text-shadow: 0 0 6px rgba(255,255,255,0.8);
     }
 
     .section h2 .icon {
@@ -167,11 +225,14 @@
     .list li + li { margin-top: 4px; }
 
     .em {
-      color: var(--primary);
+      color: var(--neon-cyan);
       font-weight: 600;
+      text-shadow:
+        0 0 4px rgba(0,207,255,0.8),
+        0 0 10px rgba(0,207,255,0.6);
     }
 
-    /* ===== Pill 링크 ===== */
+    /* ===== PILL LINKS ===== */
     .pill-list {
       display: flex;
       flex-wrap: wrap;
@@ -183,14 +244,28 @@
       padding: 5px 12px;
       border-radius: 999px;
       font-size: 11px;
-      background: #eff6ff;
-      border: 1px solid #bfdbfe;
-      color: #1d4ed8;
+      background: rgba(15,23,42,0.95);
+      border: 1px solid rgba(0,207,255,0.9);
+      color: #e5faff;
       white-space: nowrap;
       cursor: pointer;
+      box-shadow:
+        0 0 8px rgba(0,207,255,0.8),
+        0 0 18px rgba(124,58,237,0.8);
+      text-shadow:
+        0 0 4px rgba(0,0,0,0.9),
+        0 0 10px rgba(0,207,255,0.9);
+      transition: transform 0.12s ease-out, box-shadow 0.12s ease-out;
     }
 
-    /* ===== 그리드 ===== */
+    .pill:hover {
+      transform: translateY(-1px) scale(1.02);
+      box-shadow:
+        0 0 12px rgba(0,207,255,1),
+        0 0 20px rgba(124,58,237,1);
+    }
+
+    /* ===== GRID ===== */
     .columns {
       display: grid;
       grid-template-columns: 1.2fr 1fr;
@@ -198,22 +273,29 @@
       margin-top: 4px;
     }
 
-    /* ===== 작은 예시 박스 ===== */
+    /* ===== SMALL EXAMPLE BOX ===== */
     .example-box {
-      background: #f9fafb;
+      background: #020617;
       border-radius: 12px;
       padding: 12px 13px;
-      border: 1px solid #e5e7eb;
+      border: 1px solid rgba(31,41,55,0.9);
       font-size: 13px;
+      color: #e5e7eb;
+      box-shadow:
+        0 0 12px rgba(15,23,42,0.9),
+        0 0 20px rgba(15,23,42,0.8);
     }
 
     .example-label {
       font-size: 11px;
       font-weight: 700;
-      color: #374151;
+      color: var(--neon-cyan);
       margin-bottom: 6px;
       text-transform: uppercase;
       letter-spacing: 0.12em;
+      text-shadow:
+        0 0 6px rgba(0,207,255,0.9),
+        0 0 14px rgba(0,207,255,0.9);
     }
 
     .example-line {
@@ -224,19 +306,20 @@
     }
 
     .example-line span.val {
-      color: #111827;
+      color: #ffffff;
       font-weight: 600;
     }
 
-    /* ===== 안내 박스 ===== */
+    /* ===== CALLOUT ===== */
     .callout {
       margin-top: 12px;
       border-radius: 10px;
       padding: 9px 10px;
       font-size: 13px;
-      color: #075985;
-      background: #e0f2fe;
-      border: 1px dashed #38bdf8;
+      color: #022c22;
+      background: linear-gradient(90deg, #ccfbf1, #e0f2fe);
+      border: 1px dashed #0f766e;
+      box-shadow: 0 0 10px rgba(34,211,238,0.4);
     }
 
     /* ===== FAQ ===== */
@@ -247,7 +330,7 @@
     }
 
     .faq-q {
-      color: #111827;
+      color: #020617;
       font-weight: 700;
       margin-bottom: 4px;
       font-size: 14px;
@@ -258,7 +341,7 @@
       font-size: 13px;
     }
 
-    /* ===== 연락처 ===== */
+    /* ===== CONTACT BLOCK ===== */
     .contact-block {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -267,25 +350,31 @@
     }
 
     .contact-item {
-      background: #f9fafb;
+      background: rgba(15,23,42,0.96);
       border-radius: 10px;
       padding: 9px 10px;
-      border: 1px solid #e5e7eb;
+      border: 1px solid rgba(30,64,175,0.9);
+      box-shadow:
+        0 0 10px rgba(15,23,42,0.9),
+        0 0 18px rgba(37,99,235,0.8);
     }
 
     .contact-label {
       font-size: 11px;
-      color: var(--text-sub);
+      color: #9ca3af;
       margin-bottom: 2px;
     }
 
     .contact-value {
       font-size: 13px;
       font-weight: 700;
-      color: #111827;
+      color: #e5e7eb;
+      text-shadow:
+        0 0 6px rgba(59,130,246,0.9),
+        0 0 16px rgba(59,130,246,0.8);
     }
 
-    /* ===== 버튼 ===== */
+    /* ===== BUTTONS ===== */
     .btn-row {
       margin-top: 14px;
       display: flex;
@@ -303,6 +392,8 @@
       align-items: center;
       gap: 6px;
       border: none;
+      position: relative;
+      overflow: hidden;
       transition: transform 0.15s ease-out, box-shadow 0.15s ease-out, background 0.15s ease-out;
     }
 
@@ -311,42 +402,77 @@
     }
 
     .btn-primary {
-      background: linear-gradient(90deg, var(--primary), var(--secondary));
-      color: #ffffff;
-      box-shadow: 0 8px 18px rgba(59,130,246,0.35);
+      background: radial-gradient(circle at 20% 0, #ffffff, var(--neon-cyan), #0369a1);
+      color: #020617;
+      box-shadow:
+        0 0 10px rgba(0,207,255,0.9),
+        0 0 22px rgba(124,58,237,0.9);
+      text-shadow:
+        0 0 6px rgba(255,255,255,0.8),
+        0 0 14px rgba(0,0,0,0.5);
+    }
+
+    .btn-primary::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -40%;
+      width: 40%;
+      height: 200%;
+      background: linear-gradient(120deg, rgba(255,255,255,0.9), transparent);
+      opacity: 0;
+      transform: skewX(-25deg);
+      transition: opacity 0.2s ease-out, transform 0.2s ease-out;
     }
 
     .btn-ghost {
-      background: #ffffff;
-      color: #0f172a;
-      border: 1px solid #d1d5db;
+      background: transparent;
+      color: var(--neon-cyan);
+      border: 1px solid rgba(0,207,255,0.8);
+      box-shadow: 0 0 10px rgba(0,207,255,0.6);
+      text-shadow:
+        0 0 6px rgba(0,207,255,0.8),
+        0 0 12px rgba(0,0,0,0.6);
     }
 
     .btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 8px 18px rgba(15,23,42,0.12);
+      transform: translateY(-1px) scale(1.02);
+      box-shadow:
+        0 0 16px rgba(0,207,255,1),
+        0 0 26px rgba(124,58,237,0.9);
     }
 
-    /* ===== 샘플 리포트 박스 ===== */
+    .btn-primary:hover::after {
+      opacity: 0.9;
+      transform: translateX(130%) skewX(-25deg);
+    }
+
+    /* ===== SAMPLE REPORT ===== */
     .sample-page {
       max-width: 720px;
       margin: 0 auto;
-      background: #ffffff;
+      background: #020617;
       padding: 18px 16px 20px;
       border-radius: 14px;
-      border: 1px solid #e5e7eb;
-      box-shadow: 0 10px 22px rgba(15,23,42,0.08);
+      border: 1px solid rgba(30,64,175,0.9);
+      box-shadow:
+        0 0 14px rgba(15,23,42,1),
+        0 0 26px rgba(37,99,235,0.9);
+      color: #e5e7eb;
     }
 
     .sample-page h3 {
       font-size: 20px;
       margin-bottom: 4px;
-      color: #111827;
+      color: #f9fafb;
+      text-shadow:
+        0 0 6px rgba(0,207,255,0.9),
+        0 0 16px rgba(0,207,255,0.9);
     }
 
     .sample-meta {
       font-size: 13px;
-      color: #6b7280;
+      color: #9ca3af;
       margin-bottom: 14px;
     }
 
@@ -354,27 +480,36 @@
       font-size: 15px;
       margin-top: 12px;
       margin-bottom: 6px;
-      color: var(--accent);
+      color: var(--neon-cyan);
+      text-shadow:
+        0 0 6px rgba(0,207,255,0.9),
+        0 0 14px rgba(0,207,255,0.9);
     }
 
     .sample-page p {
       font-size: 14px;
-      color: #374151;
+      color: #e5e7eb;
     }
 
     .sample-divider {
       margin: 12px 0;
-      border-top: 1px dashed #e5e7eb;
+      border-top: 1px dashed rgba(75,85,99,0.9);
     }
 
     footer {
       margin-top: 22px;
       text-align: center;
       font-size: 11px;
-      color: #9ca3af;
+      color: #6b7280;
     }
 
-    /* ===== 반응형 ===== */
+    /* ===== ANIMATION ===== */
+    @keyframes run-line {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(180%); }
+    }
+
+    /* ===== RESPONSIVE ===== */
     @media (max-width: 768px) {
       .page {
         padding: 20px 14px 40px;
@@ -460,11 +595,11 @@
       <div class="columns">
         <div>
           <p>
-            보고서는 <span class="em">매주 ○요일 밤</span>  
+            보고서는 <span class="em">매주 일요일 밤</span>  
             학원에 등록된 보호자 연락처로 발송됩니다.
           </p>
           <ul class="list">
-            <li>• 발송 예시: 매주 일요일 21:00 전후</li>
+            <li>• 발송 시간: 매주 일요일 21:00 전후</li>
             <li>• 발송 형식: 카카오톡 또는 문자 + 웹 링크 / PDF</li>
             <li>• 연락처 변경 시, 반드시 선생님께 알려주세요.</li>
           </ul>
@@ -497,40 +632,17 @@
       </div>
     </section>
 
-    <!-- SECTION 3: 화면 예시 -->
-    <section class="section">
-      <h2><span class="icon">👀</span>보고서 화면 예시</h2>
-      <p>
-        실제 보고서는 아래와 유사한 형태의 디자인으로 제공됩니다.  
-        (이미지는 예시이며, 추후 일부 구성은 조정될 수 있습니다.)
-      </p>
 
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-top: 12px;">
-        <div class="example-box">
-          <div class="example-label">PAGE 1 · SUMMARY</div>
-          <p>주간 핵심 내용과 점수가 요약된 페이지 예시 이미지 영역입니다.</p>
-        </div>
-        <div class="example-box">
-          <div class="example-label">PAGE 2 · DETAIL</div>
-          <p>단원별 진도/테스트/오답 분석이 들어간 상세 페이지 예시 이미지 영역입니다.</p>
-        </div>
-      </div>
-
-      <div class="callout">
-        ※ 실제 캡처 예시는 학부모님께 별도로 안내드릴 예정입니다.
-      </div>
-    </section>
-
-    <!-- SECTION 3.5: 실제 리포트 예시 -->
+    <!-- SECTION 3: 주간 리포트 -->
     <section class="section" id="sample-report">
-      <h2><span class="icon">📊</span>실제 주간 보고서 예시</h2>
+      <h2><span class="icon">📊</span>주간 리포트</h2>
       <p style="margin-bottom:8px;">
-        아래 예시는 실제로 보내드리는 주간 학습 보고서의 예시입니다.  
+        아래에 학생의 주간 상태를 표기해놓은 곳. 즉, 주간 학습 보고서입니다.  
         학생 이름, 점수, 진도 등의 내용은 주마다 실제 결과에 맞추어 변경됩니다.
       </p>
 
       <div class="sample-page">
-        <h3>주간 학습 보고서 예시</h3>
+        <h3>주간 학습 보고서</h3>
         <div class="sample-meta">
           2025년 11월 3주차 · 고2 ○○○ 학생 · 과목: 수학
         </div>
@@ -644,7 +756,7 @@
         </div>
         <div class="contact-item">
           <div class="contact-label">연락처</div>
-          <div class="contact-value">010-0000-0000</div>
+          <div class="contact-value">010-2319-7526</div>
         </div>
         <div class="contact-item">
           <div class="contact-label">카카오톡 채널</div>
@@ -652,13 +764,13 @@
         </div>
         <div class="contact-item">
           <div class="contact-label">상담 가능 시간</div>
-          <div class="contact-value">평일 13:00 ~ 22:00 / 주말 협의</div>
+          <div class="contact-value">매일 13:00 ~ 익일 04:00 / 주말 협의</div>
         </div>
       </div>
 
       <div class="btn-row">
         <!-- 여기 href에 네 실제 카카오 채널/오픈채팅 링크 넣으면 됨 -->
-        <a href="#" class="btn btn-primary" target="_blank">
+        <a href="https://open.kakao.com/o/gxBvHX1h" class="btn btn-primary" target="_blank">
           <span class="icon">💬</span>카카오톡으로 문의하기
         </a>
         <a href="#sample-report" class="btn btn-ghost">
@@ -668,7 +780,7 @@
     </section>
 
     <footer>
-      RTM 주간 보고서 안내 페이지 · 문구 및 구성은 학원 운영 방식에 맞게 자유롭게 수정하셔도 됩니다.
+      오늘 흘린 피와 땀이 없으면 내일의 미래도 없다. 살다 보니 그렇더라. RACE TO MIRACLE 수학 박원욱
     </footer>
   </div>
 </body>
