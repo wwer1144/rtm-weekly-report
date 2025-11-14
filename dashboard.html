@@ -2,62 +2,130 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>RTM 전체 학생 대시보드</title>
+  <title>RTM 학생 대시보드</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
   <style>
+    :root {
+      --bg: #f5f7ff;
+      --card-bg: #ffffff;
+      --text-main: #0f172a;
+      --text-sub: #4b5563;
+      --border: #d4d4dd;
+
+      --sky: #e0f2ff;
+      --sky-border: #bfdbfe;
+      --primary: #0ea5e9;
+      --secondary: #6366f1;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
-      font-family: "Noto Sans KR", sans-serif;
-      background: #f1f5f9;
+      background: var(--bg);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
       padding: 20px;
-      color: #0f172a;
-      line-height: 1.6;
+      color: var(--text-main);
     }
 
     h1 {
-      text-align: center;
-      margin-bottom: 20px;
-      font-size: 26px;
+      font-size: 24px;
       font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .controls {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: 1fr 1fr;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 600px) {
+      .controls {
+        grid-template-columns: 1fr;
+      }
     }
 
     .card {
-      background: white;
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      margin-bottom: 12px;
+    }
+
+    .student-name {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--secondary);
+    }
+
+    .student-info {
+      margin-top: 6px;
+      font-size: 14px;
+      color: var(--text-sub);
+      line-height: 1.4;
+    }
+
+    .btn-small {
+      padding: 6px 10px;
+      border-radius: 8px;
+      background: var(--sky);
+      border: 1px solid var(--sky-border);
+      font-size: 13px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .btn-small:hover {
+      background: #bae6fd;
+    }
+
+    /* 검색창 / 정렬 / 필터 */
+    input, select {
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #cbd5e1;
+      font-size: 14px;
+      width: 100%;
+    }
+
+    .list {
+      margin-top: 20px;
+    }
+
+    /* 그래프 모달 */
+    .modal-bg {
+      position: fixed;
+      left:0; right:0; top:0; bottom:0;
+      background: rgba(0,0,0,0.4);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .modal {
+      background: #fff;
       padding: 20px;
       border-radius: 14px;
-      box-shadow: 0 8px 18px rgba(0,0,0,0.06);
-      margin-bottom: 20px;
-    }
-
-    table {
+      max-width: 400px;
       width: 100%;
-      border-collapse: collapse;
+      text-align: center;
+    }
+
+    #modal-close {
       margin-top: 12px;
-    }
-    table th, table td {
-      padding: 10px;
-      border-bottom: 1px solid #e2e8f0;
-      font-size: 14px;
-    }
-    table th {
-      background: #e0f2ff;
-      font-weight: 700;
-    }
-
-    .good { color: #059669; font-weight:600; }
-    .mid  { color: #d97706; font-weight:600; }
-    .bad  { color: #dc2626; font-weight:600; }
-
-    a {
-      color: #0ea5e9;
-      font-weight: 700;
-      text-decoration: none;
+      padding: 8px 16px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -66,112 +134,282 @@
 
 <h1>RTM 전체 학생 대시보드</h1>
 
-<div class="card">
-  <h2>📈 전체 학생 평균 변화 (점수)</h2>
-  <canvas id="avgChart"></canvas>
+<div class="controls">
+  <input id="search" type="text" placeholder="학생 이름 / 학년 검색…">
+
+  <select id="filter-grade">
+    <option value="">전체 학년</option>
+    <option value="초">초등</option>
+    <option value="중">중등</option>
+    <option value="고">고등</option>
+  </select>
+
+  <select id="sort">
+    <option value="">정렬 없음</option>
+    <option value="name">이름순</option>
+    <option value="grade">학년순</option>
+    <option value="homework">숙제 수행률순</option>
+    <option value="test">테스트 점수순</option>
+  </select>
+
+  <button id="monthly-btn" class="btn-small">📅 월간 리포트 자동 생성</button>
 </div>
 
-<div class="card">
-  <h2>📊 전체 학생 현황 테이블</h2>
+<div id="student-list" class="list"></div>
 
-  <table>
-    <thead>
-      <tr>
-        <th>이름</th>
-        <th>학년</th>
-        <th>점수</th>
-        <th>숙제</th>
-        <th>출결</th>
-        <th>상태</th>
-        <th>보고서</th>
-      </tr>
-    </thead>
-
-    <tbody id="table-body"></tbody>
-  </table>
+<!-- 출결 그래프 모달 -->
+<div id="modal-bg" class="modal-bg">
+  <div class="modal">
+    <h3 id="modal-title">출결 그래프</h3>
+    <canvas id="attendanceChart" width="300" height="200"></canvas>
+    <button id="modal-close">닫기</button>
+  </div>
 </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-  async function loadDashboard() {
+let students = [];
 
-    // students.json 불러오기
+// JSON 로드
+async function loadStudents() {
+  try {
     const res = await fetch("data/students.json");
-    const students = await res.json();
+    students = await res.json();
+    renderList(students);
+  } catch (e) {
+    console.error("학생 목록 불러오기 실패:", e);
+  }
+}
 
-    let totalScore = 0;
-    let totalHw = 0;
-    let count = 0;
+// 학생 카드 HTML 생성
+function createStudentCard(s) {
+  return `
+    <div class="card">
+      <div class="student-name">${s.name} (${s.grade})</div>
+      <div class="student-info">
+        · 숙제 수행률: ${s.homework || "??"}<br>
+        · 테스트 점수: ${s.test || "??"}<br>
+        · 결석 ${s.att?.absent ?? 0} · 지각 ${s.att?.late ?? 0} · 조퇴 ${s.att?.earlyLeave ?? 0}
+      </div>
+      <button class="btn-small" onclick="openAttendance('${s.id}')">📊 출결 그래프</button>
+      <a href="./?student=${s.id}">
+        <button class="btn-small">📄 보고서 보기</button>
+      </a>
+    </div>
+  `;
+}
 
-    let avgWeeks = [];
-    let avgScoreList = [];
+// 리스트 렌더링
+function renderList(list) {
+  const box = document.getElementById("student-list");
+  box.innerHTML = list.map(createStudentCard).join("");
+}
 
-    const tableBody = document.getElementById("table-body");
+// 검색 기능
+document.getElementById("search").addEventListener("input", () => {
+  const q = document.getElementById("search").value.trim();
+  filterAndRender(q);
+});
 
-    for (const s of students) {
+// 필터 + 정렬 적용
+function filterAndRender(q = "") {
+  let filtered = [...students];
 
-      const jsonRes = await fetch(`data/${s.id}.json`);
-      if (!jsonRes.ok) continue;
-      const data = await jsonRes.json();
-
-      const score = Number(data.test.score);
-      const hw = Number(String(data.homework.completion).replace("%",""));
-      const abs = Number(data.attendance.absent || 0);
-      const late = Number(data.attendance.late || 0);
-      const early = Number(data.attendance.earlyLeave || 0);
-
-      // 평균 계산
-      totalScore += score;
-      totalHw += hw;
-      count++;
-
-      // 상태 분류
-      let status = "";
-      if (score >= 90) status = "<span class='good'>상위</span>";
-      else if (score >= 70) status = "<span class='mid'>중위</span>";
-      else status = "<span class='bad'>하위</span>";
-
-      // 테이블 추가
-      tableBody.innerHTML += `
-        <tr>
-          <td>${data.studentName}</td>
-          <td>${data.grade}</td>
-          <td>${score}</td>
-          <td>${hw}%</td>
-          <td>${abs}/${late}/${early}</td>
-          <td>${status}</td>
-          <td><a href="./?student=${s.id}" target="_blank">보기</a></td>
-        </tr>
-      `;
-
-      // 주차별 평균 그래프 만들기 (history가 있을 때)
-      if (data.history) {
-        avgWeeks = data.history.weeks;
-        avgScoreList = data.history.scores;
-      }
-    }
-
-    // ===== 그래프 생성 =====
-    if (avgWeeks.length > 0) {
-      const ctx = document.getElementById("avgChart");
-
-      new Chart(ctx, {
-        type: "line",
-        data: {
-          labels: avgWeeks,
-          datasets: [{
-            label: "평균 점수 변화",
-            data: avgScoreList,
-            borderColor: "#0ea5e9",
-            backgroundColor: "rgba(14,165,233,0.2)",
-            tension: 0.3
-          }]
-        }
-      });
-    }
+  // 검색
+  if (q) {
+    filtered = filtered.filter(s =>
+      s.name.includes(q) ||
+      s.grade.includes(q) ||
+      s.id.includes(q)
+    );
   }
 
-  loadDashboard();
-</script>
+  // 학년 필터
+  const fg = document.getElementById("filter-grade").value;
+  if (fg) {
+    filtered = filtered.filter(s => s.grade.startsWith(fg));
+  }
 
-</body>
-</html>
+  // 정렬
+  const sortType = document.getElementById("sort").value;
+  switch (sortType) {
+    case "name":
+      filtered.sort((a,b)=>a.name.localeCompare(b.name));
+      break;
+    case "grade":
+      filtered.sort((a,b)=>a.grade.localeCompare(b.grade));
+      break;
+    case "homework":
+      filtered.sort((a,b)=>(parseInt(b.homework)-parseInt(a.homework)));
+      break;
+    case "test":
+      filtered.sort((a,b)=>(parseInt(b.test)-parseInt(a.test)));
+      break;
+  }
+
+  renderList(filtered);
+}
+
+// 정렬 및 필터 이벤트 등록
+document.getElementById("filter-grade").addEventListener("change", filterAndRender);
+document.getElementById("sort").addEventListener("change", filterAndRender);
+
+// 출결 그래프
+let chart;
+
+function openAttendance(id) {
+  const s = students.find(x => x.id === id);
+  if (!s) return;
+
+  document.getElementById("modal-bg").style.display = "flex";
+  document.getElementById("modal-title").textContent = `${s.name} 출결 그래프`;
+
+  const ctx = document.getElementById("attendanceChart");
+
+  if (chart) chart.destroy();
+
+  chart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['결석', '지각', '조퇴'],
+      datasets: [{
+        label: "횟수",
+        data: [
+          s.att?.absent ?? 0,
+          s.att?.late ?? 0,
+          s.att?.earlyLeave ?? 0
+        ],
+        backgroundColor: ['#f87171', '#facc15', '#60a5fa']
+      }]
+    }
+  });
+}
+
+document.getElementById("modal-close").onclick = () => {
+  document.getElementById("modal-bg").style.display = "none";
+};
+
+
+// ⚡ 월간 리포트 생성
+document.getElementById("monthly-btn").onclick = () => {
+  let msg = "📅 이번 달 요약\n\n";
+
+  students.forEach(s => {
+    msg += `👤 ${s.name} (${s.grade})\n`;
+    msg += `• 숙제 평균: ${s.homework || "??"}%\n`;
+    msg += `• 테스트 평균: ${s.test || "??"}점\n`;
+    msg += `• 결석:${s.att?.absent ?? 0} / 지각:${s.att?.late ?? 0} / 조퇴:${s.att?.earlyLeave ?? 0}\n\n`;
+  });
+
+  alert(msg);
+};
+
+loadStudents();
+</script>
+[
+  {
+    "id": "leechaehoon",
+    "name": "이채훈",
+    "grade": "중1",
+    "homework": "100",
+    "test": "95",
+    "att": { "absent": 0, "late": 0, "earlyLeave": 0 }
+  },
+  {
+    "id": "kimkangin",
+    "name": "김강인",
+    "grade": "중1",
+    "homework": "100",
+    "test": "84",
+    "att": { "absent": 0, "late": 0, "earlyLeave": 0 }
+  },
+  {
+    "id": "jeongjinwoo",
+    "name": "정진우",
+    "grade": "중1",
+    "homework": "92",
+    "test": "88",
+    "att": { "absent": 1, "late": 0, "earlyLeave": 0 }
+  },
+  {
+    "id": "jeongyoolwon",
+    "name": "정율원",
+    "grade": "중2",
+    "homework": "95",
+    "test": "81",
+    "att": { "absent": 0, "late": 1, "earlyLeave": 0 }
+  },
+  {
+    "id": "baetaerang",
+    "name": "배태랑",
+    "grade": "중1",
+    "homework": "97",
+    "test": "93",
+    "att": { "absent": 0, "late": 0, "earlyLeave": 1 }
+  },
+  {
+    "id": "cheyujin",
+    "name": "제유진",
+    "grade": "중2",
+    "homework": "88",
+    "test": "72",
+    "att": { "absent": 2, "late": 0, "earlyLeave": 0 }
+  },
+  {
+    "id": "kangguyuon",
+    "name": "강규온",
+    "grade": "중1",
+    "homework": "100",
+    "test": "90",
+    "att": { "absent": 0, "late": 0, "earlyLeave": 0 }
+  },
+  {
+    "id": "kimgayeon",
+    "name": "김가연",
+    "grade": "중3",
+    "homework": "94",
+    "test": "86",
+    "att": { "absent": 1, "late": 0, "earlyLeave": 0 }
+  },
+  {
+    "id": "kimyoonho",
+    "name": "김윤호",
+    "grade": "중1",
+    "homework": "100",
+    "test": "89",
+    "att": { "absent": 0, "late": 0, "earlyLeave": 0 }
+  },
+  {
+    "id": "leeyechan",
+    "name": "이예찬",
+    "grade": "중1",
+    "homework": "90",
+    "test": "82",
+    "att": { "absent": 0, "late": 0, "earlyLeave": 0 }
+  },
+  {
+    "id": "limseojin",
+    "name": "임서진",
+    "grade": "중2",
+    "homework": "100",
+    "test": "94",
+    "att": { "absent": 0, "late": 1, "earlyLeave": 0 }
+  },
+  {
+    "id": "ohsehong",
+    "name": "오세홍",
+    "grade": "중1",
+    "homework": "93",
+    "test": "88",
+    "att": { "absent": 0, "late": 0, "earlyLeave": 0 }
+  },
+  {
+    "id": "songsihou",
+    "name": "송시후",
+    "grade": "중3",
+    "homework": "100",
+    "test": "96",
+    "att": { "absent": 0, "late": 1, "earlyLeave": 0 }
+  }
+]
