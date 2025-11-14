@@ -43,7 +43,7 @@
       overflow-x: hidden;
     }
 
-    /* 배경 네온 라인 */
+    /* 배경 네온 광원 */
     body::before,
     body::after {
       content: "";
@@ -212,7 +212,6 @@
       overflow: hidden;
     }
 
-    /* 각 섹션 상단 네온 스피드라인 */
     .section::before {
       content: "";
       position: absolute;
@@ -454,6 +453,47 @@
     }
 
     /* ===============================
+       SAMPLE REPORT INNER STYLE
+       =============================== */
+    .sample-page {
+      max-width: 720px;
+      margin: 0 auto;
+      background: #020617;
+      padding: 20px 18px 22px;
+      border-radius: 16px;
+      border: 1px solid #1e293b;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.8);
+    }
+
+    .sample-page h3 {
+      font-size: 22px;
+      margin-bottom: 4px;
+      color: #e5e7eb;
+    }
+
+    .sample-meta {
+      font-size: 13px;
+      color: #9ca3af;
+      margin-bottom: 16px;
+    }
+
+    .sample-page h4 {
+      font-size: 16px;
+      margin-top: 14px;
+      margin-bottom: 6px;
+      color: #38bdf8;
+    }
+
+    .sample-page p, .sample-page li {
+      font-size: 14px;
+    }
+
+    .sample-divider {
+      margin: 14px 0;
+      border-top: 1px dashed #1f2937;
+    }
+
+    /* ===============================
        FOOTER
        =============================== */
     footer {
@@ -627,62 +667,68 @@
       </div>
     </section>
 
-    <!-- SECTION 3.5: 실제 리포트 예시 (텍스트) -->
+    <!-- SECTION 3.5: 실제 리포트 예시 (네가 준 코드 내용 삽입) -->
     <section class="section" id="sample-report">
       <h2><span class="icon">📊</span>실제 주간 보고서 예시</h2>
       <p style="margin-bottom:8px;">
-        아래 예시는 실제로 보내드리는 주간 학습 보고서의 구성 예시입니다.  
+        아래 예시는 실제로 보내드리는 주간 학습 보고서의 예시입니다.  
         학생 이름, 점수, 진도 등의 내용은 주마다 실제 결과에 맞추어 변경됩니다.
       </p>
 
-      <div class="example-box" style="margin-top:10px;">
-        <div class="example-label">2025년 11월 3주차 · 고2 ○○○ 학생</div>
-
-        <!-- 1. 출결 현황 -->
-        <div class="example-line">
-          <span>1. 출결 현황</span>
-          <span class="val">결석 0 · 지각 0 · 조퇴 0</span>
+      <div class="sample-page">
+        <h3>주간 학습 보고서 예시</h3>
+        <div class="sample-meta">
+          2025년 11월 3주차 · 고2 ○○○ 학생 · 과목: 수학
         </div>
-        <p style="font-size:13px; color:var(--text-sub); margin:2px 0 6px 0;">
-          · 수업 태도: 매우 좋음 (수업 내내 집중력이 좋고, 모르는 부분을 바로 질문하는 편입니다.)
+
+        <h4>1. 출결 현황</h4>
+        <p>
+          · 이번 주 수업일: 3회<br/>
+          · 결석 0회 / 지각 0회 / 조퇴 0회<br/>
+          · 수업 태도: 매우 좋음 (수업 내내 집중력이 좋고, 모르는 부분은 바로 질문하는 편입니다.)
         </p>
 
-        <!-- 2. 단원별 진도 -->
-        <div class="example-line">
-          <span>2. 단원별 진도</span>
-          <span class="val">수1 3단원 삼각함수 (3.1~3.3)</span>
-        </div>
-        <p style="font-size:13px; color:var(--text-sub); margin:2px 0 6px 0;">
-          · 이번 주에는 삼각함수 그래프와 주기·진폭을 중심으로 개념 정리 및 유형 연습을 진행했습니다.
+        <div class="sample-divider"></div>
+
+        <h4>2. 단원별 진도</h4>
+        <p>
+          · 학습 단원: 수1 3단원 삼각함수<br/>
+          · 상세 진도: 3.1~3.3(삼각함수의 그래프, 주기·진폭) 개념 정리 및 유형별 문제 풀이<br/>
+          · 이해도: 개념은 전반적으로 이해하였으나, 고난도 문제 적용 시 약간의 추가 연습 필요
         </p>
 
-        <!-- 3. 숙제 수행률 -->
-        <div class="example-line">
-          <span>3. 숙제 수행률</span>
-          <span class="val">수행률 100% · 정답률 84%</span>
-        </div>
-        <p style="font-size:13px; color:var(--text-sub); margin:2px 0 6px 0;">
-          · 숙제는 모두 성실히 수행하였으며, 부등식 부호·계산 과정에서의 실수가 몇 차례 있었습니다.
+        <div class="sample-divider"></div>
+
+        <h4>3. 숙제 수행률</h4>
+        <p>
+          · 숙제 분량: 연습모드 p.45~52, 총 32문제<br/>
+          · 제출 여부: 제시간 제출<br/>
+          · 수행률: 100% (32/32)<br/>
+          · 정답률: 84% (27/32)<br/>
+          · 코멘트: 양은 모두 채웠으나, 부등식 부호·계산 과정에서의 실수가 반복되어 검산 습관이 필요합니다.
         </p>
 
-        <!-- 4. 테스트 결과 -->
-        <div class="example-line">
-          <span>4. 테스트 결과</span>
-          <span class="val">단원 테스트 84점 (반 평균 76점)</span>
-        </div>
-        <p style="font-size:13px; color:var(--text-sub); margin:2px 0 6px 0;">
-          · 기본 개념 문제는 안정적으로 해결하나, 서술형 고난도 문항에서 풀이를 끝까지 쓰지 않아 감점이 발생했습니다.
+        <div class="sample-divider"></div>
+
+        <h4>4. 테스트 결과</h4>
+        <p>
+          · 테스트 종류: 삼각함수 소단원 테스트<br/>
+          · 시험 일자: 2025-11-14<br/>
+          · 점수: 84점 / 100점 (반 평균 76점)<br/>
+          · 상대 위치: 상위권<br/>
+          · 해석: 기본 개념 문제는 안정적으로 해결하나, 서술형 고난도 문항에서 풀이를 끝까지 쓰지 않아 감점이 발생했습니다.
         </p>
 
-        <!-- 5. 담임 종합 코멘트 -->
-        <div class="example-line">
-          <span>5. 담임 종합 코멘트</span>
-          <span class="val">요약 코멘트</span>
-        </div>
-        <p style="font-size:13px; color:var(--text-sub); margin:2px 0 2px 0;">
-          ① 잘한 점: 수업 태도가 안정적이고, 모르는 부분을 바로 질문하려는 태도가 매우 좋습니다.<br/>
-          ② 보완점: 계산·부호 실수가 반복되어, 문제를 다 푼 뒤 마지막에 한 번 더 검산하는 습관이 필요합니다.<br/>
-          ③ 다음 주 계획: 삼각함수 서술형·고난도 문제를 중심으로 최근 틀린 문항을 다시 풀려보며, 실수를 줄이는 방향으로 수업을 진행하겠습니다.
+        <div class="sample-divider"></div>
+
+        <h4>5. 담임 종합 코멘트</h4>
+        <p>
+          ① <strong>잘한 점</strong><br/>
+          · 수업 태도가 안정적이고, 모르는 부분을 바로 질문하려는 태도가 매우 좋습니다.<br/><br/>
+          ② <strong>보완이 필요한 부분</strong><br/>
+          · 계산·부호 실수가 반복되어, 문제를 다 푼 뒤 마지막에 한 번 더 검산하는 습관이 필요합니다.<br/><br/>
+          ③ <strong>다음 주 지도 계획</strong><br/>
+          · 삼각함수 서술형·고난도 문제를 중심으로 최근 틀린 문항을 다시 풀려보며, 실수를 줄이는 방향으로 수업을 진행하겠습니다.
         </p>
       </div>
 
