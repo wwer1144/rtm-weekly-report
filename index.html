@@ -607,65 +607,68 @@
       }
     }
 
-    async function loadReport(studentId) {
-      statusEl.textContent = '로딩 중입니다...';
+async function loadReport(studentId) {
+  statusEl.textContent = '로딩 중입니다...';
 
-      try {
-        const res = await fetch(`data/${studentId}.json`);
-        if (!res.ok) {
-          statusEl.textContent = `해당 학생 데이터를 찾을 수 없습니다. (data/${studentId}.json)`;
-          showSelector();
-          return;
-        }
-
-        const data = await res.json();
-        statusEl.textContent = '';
-
-        metaLine.textContent =
-          `${data.week} · ${data.grade} ${data.studentName} 학생 · 과목: ${data.subject}`;
-
-        const att = data.attendance;
-        document.getElementById('attendance').innerHTML =
-          `· 이번 주 수업일: ${att.totalClasses}회<br/>
-           · 결석 ${att.absent}회 / 지각 ${att.late}회 / 조퇴 ${att.earlyLeave}회<br/>
-           · 수업 태도: ${att.attitude}`;
-
-        const prog = data.progress;
-        document.getElementById('progress').innerHTML =
-          `· 학습 단원: ${prog.unit}<br/>
-           · 상세 진도: ${prog.detail}<br/>
-           · 이해도: ${prog.understanding}`;
-
-        const hw = data.homework;
-        document.getElementById('homework').innerHTML =
-          `· 숙제 분량: ${hw.amount}<br/>
-           · 제출 여부: ${hw.submission}<br/>
-           · 수행률: ${hw.completion}<br/>
-           · 정답률: ${hw.correct}<br/>
-           · 코멘트: ${hw.comment}`;
-
-        const test = data.test;
-        document.getElementById('test').innerHTML =
-          `· 테스트 종류: ${test.type}<br/>
-           · 시험 일자: ${test.date}<br/>
-           · 점수: ${test.score}점 / ${test.total}점 (반 평균 ${test.classAverage}점)<br/>
-           · 상대 위치: ${test.rank}<br/>
-           · 해석: ${test.analysis}`;
-
-        const com = data.comment;
-        document.getElementById('comment-title').textContent =
-          `담임 종합 코멘트 - ${data.studentName} 학생`;
-        document.getElementById('comment-meta').textContent = com.summary;
-        document.getElementById('comment-good').textContent = com.good;
-        document.getElementById('comment-bad').textContent = com.need;
-        document.getElementById('comment-plan').textContent = com.plan;
-
-        showReport();
-      } catch (e) {
-        console.error(e);
-        statusEl.textContent = '데이터를 불러오는 중 오류가 발생했습니다.';
-      }
+  try {
+    const res = await fetch(`data/${studentId}.json`);
+    if (!res.ok) {
+      statusEl.textContent = `해당 학생 데이터를 찾을 수 없습니다. (data/${studentId}.json)`;
+      showSelector();
+      return;
     }
+
+    const data = await res.json();
+    statusEl.textContent = '';
+
+    // 안전하게 기본값 처리 (undefined → 빈 문자열)
+    const safe = (v) => (v === undefined || v === null ? '' : v);
+
+    metaLine.textContent =
+      `${safe(data.week)} · ${safe(data.grade)} ${safe(data.studentName)} 학생 · 과목: ${safe(data.subject)}`;
+
+    const att = data.attendance || {};
+    document.getElementById('attendance').innerHTML =
+      `· 이번 주 수업일: ${safe(att.totalClasses)}<br/>
+       · 결석 ${safe(att.absent)}회 / 지각 ${safe(att.late)}회 / 조퇴 ${safe(att.earlyLeave)}회<br/>
+       · 수업 태도: ${safe(att.attitude)}`;
+
+    const prog = data.progress || {};
+    document.getElementById('progress').innerHTML =
+      `· 학습 단원: ${safe(prog.unit)}<br/>
+       · 상세 진도: ${safe(prog.detail)}<br/>
+       · 이해도: ${safe(prog.understanding)}`;
+
+    const hw = data.homework || {};
+    document.getElementById('homework').innerHTML =
+      `· 숙제 분량: ${safe(hw.amount)}<br/>
+       · 제출 여부: ${safe(hw.submission)}<br/>
+       · 수행률: ${safe(hw.completion)}<br/>
+       · 정답률: ${safe(hw.correct)}<br/>
+       · 코멘트: ${safe(hw.comment)}`;
+
+    const test = data.test || {};
+    document.getElementById('test').innerHTML =
+      `· 테스트 종류: ${safe(test.type)}<br/>
+       · 시험 일자: ${safe(test.date)}<br/>
+       · 점수: ${safe(test.score)}점 / ${safe(test.total)}점 (반 평균 ${safe(test.classAverage)}점)<br/>
+       · 상대 위치: ${safe(test.rank)}<br/>
+       · 해석: ${safe(test.analysis)}`;
+
+    const com = data.comment || {};
+    document.getElementById('comment-title').textContent =
+      `담임 종합 코멘트 - ${safe(data.studentName)} 학생`;
+    document.getElementById('comment-meta').textContent = safe(com.summary);
+    document.getElementById('comment-good').textContent = safe(com.good);
+    document.getElementById('comment-bad').textContent = safe(com.need);
+    document.getElementById('comment-plan').textContent = safe(com.plan);
+
+    showReport();
+  } catch (e) {
+    console.error(e);
+    statusEl.textContent = '데이터를 불러오는 중 오류가 발생했습니다.';
+  }
+}
 
     // PIN 확인
     pinBtn.addEventListener('click', () => {
@@ -706,4 +709,5 @@
   </script>
 </body>
 </html>
+
 
