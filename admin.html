@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>RTM 주간보고 JSON 생성기 (교사용)</title>
+  <title>RTM 주간보고 관리자 도구 (admin)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     body {
@@ -13,22 +13,27 @@
       color: #0f172a;
     }
     .wrap {
-      max-width: 960px;
+      max-width: 1100px;
       margin: 0 auto;
     }
     h1 {
       font-size: 22px;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
-    .desc {
+    .subtitle {
       font-size: 13px;
       color: #4b5563;
       margin-bottom: 18px;
     }
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1.1fr 1.4fr;
-      gap: 16px;
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #e0f2fe;
+      color: #0369a1;
+      font-size: 11px;
+      font-weight: 600;
+      margin-bottom: 4px;
     }
     .card {
       background: #ffffff;
@@ -36,10 +41,25 @@
       padding: 14px 14px 16px;
       border: 1px solid #d4d4dd;
       box-shadow: 0 8px 18px rgba(15,23,42,0.06);
+      margin-bottom: 16px;
     }
     .card h2 {
-      font-size: 15px;
+      font-size: 16px;
       margin-bottom: 8px;
+    }
+    .card h3 {
+      font-size: 14px;
+      margin: 8px 0 4px;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.1fr 1.4fr;
+      gap: 16px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1.3fr 1.2fr 1.1fr;
+      gap: 10px;
     }
     .field {
       margin-bottom: 8px;
@@ -50,7 +70,8 @@
       margin-bottom: 3px;
     }
     .field input,
-    .field textarea {
+    .field textarea,
+    .field select {
       width: 100%;
       padding: 6px 8px;
       border-radius: 8px;
@@ -59,7 +80,7 @@
       font-family: inherit;
     }
     .field textarea {
-      min-height: 54px;
+      min-height: 48px;
       resize: vertical;
     }
     .field small {
@@ -67,7 +88,7 @@
       color: #6b7280;
     }
     .btn {
-      padding: 8px 14px;
+      padding: 7px 13px;
       border-radius: 999px;
       border: none;
       background: #0ea5e9;
@@ -80,8 +101,24 @@
       gap: 6px;
       margin-top: 4px;
     }
-    .btn:hover { background: #0284c7; }
-    .output {
+    .btn.secondary {
+      background: #6366f1;
+    }
+    .btn.danger {
+      background: #ef4444;
+    }
+    .btn.small {
+      font-size: 12px;
+      padding: 5px 10px;
+    }
+    .btn:hover { filter: brightness(0.95); }
+    .status {
+      font-size: 12px;
+      margin-top: 4px;
+    }
+    .status.ok { color: #0f766e; }
+    .status.err { color: #b91c1c; }
+    textarea.output {
       width: 100%;
       min-height: 260px;
       margin-top: 10px;
@@ -92,242 +129,801 @@
       font-size: 12px;
       white-space: pre;
     }
-    .status {
+    table {
+      width: 100%;
+      border-collapse: collapse;
       font-size: 12px;
-      color: #0f766e;
-      margin-top: 6px;
     }
-    @media (max-width: 768px) {
-      .form-grid { grid-template-columns: 1fr; }
+    th, td {
+      border-top: 1px solid #e5e7eb;
+      padding: 4px 6px;
+      text-align: left;
+    }
+    th {
+      background: #f1f5f9;
+      cursor: pointer;
+    }
+    tr:hover {
+      background: #f9fafb;
+    }
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      background: #e0f2fe;
+      color: #0369a1;
+      margin-left: 4px;
+    }
+    .login-box {
+      max-width: 360px;
+      margin: 40px auto;
+      text-align: center;
+    }
+    .hidden { display: none; }
+
+    @media (max-width: 900px) {
+      .grid-2 { grid-template-columns: 1fr; }
+      .grid-3 { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>RTM 주간보고 JSON 생성기 (교사용)</h1>
-    <div class="desc">
-      왼쪽에 이번 주 데이터를 입력하고 <strong>JSON 만들기</strong>를 누르면  
-      <code>data/학생ID.json</code>에 넣을 내용을 자동으로 만들어 줍니다.  
-      만들어진 JSON은 그대로 복사해서 GitHub에 붙여넣거나, 파일로 다운로드하면 됩니다.
+<div class="wrap">
+
+  <!-- 로그인 -->
+  <div id="login-view" class="login-box">
+    <div class="badge">관리자 전용</div>
+    <h1>RTM 주간보고 관리자 도구</h1>
+    <p class="subtitle">이 페이지는 선생님 전용입니다. PIN 입력 후 접속해 주세요.</p>
+    <div class="field">
+      <label for="admin-pin">관리자 PIN</label>
+      <input id="admin-pin" type="password" placeholder="예: 2857" />
+      <small>※ 진짜 보안용이 아니라, 우연히 들어오는 사람을 막는 용도입니다.</small>
     </div>
-
-    <div class="form-grid">
-      <div class="card">
-        <h2>입력</h2>
-
-        <div class="field">
-          <label>학생 ID (파일명, 예: hong, leechahoon)</label>
-          <input id="f-id" placeholder="예: hong" />
-          <small>index.html에서 ?student=이 값으로 접속합니다.</small>
-        </div>
-
-        <div class="field">
-          <label>학생 이름</label>
-          <input id="f-name" placeholder="예: 홍길동" />
-        </div>
-
-        <div class="field">
-          <label>학년/반</label>
-          <input id="f-grade" placeholder="예: 고2" />
-        </div>
-
-        <div class="field">
-          <label>주차</label>
-          <input id="f-week" placeholder="예: 2025년 11월 3주차" />
-        </div>
-
-        <div class="field">
-          <label>과목</label>
-          <input id="f-subject" value="수학" />
-        </div>
-
-        <hr style="margin:10px 0; border:none; border-top:1px dashed #e5e7eb;" />
-
-        <div class="field">
-          <label>출결 요약</label>
-          <input id="f-att-total" placeholder="총 수업 3회" />
-        </div>
-        <div class="field">
-          <label>결석/지각/조퇴 (텍스트)</label>
-          <input id="f-att-detail" placeholder="결석 0회 / 지각 0회 / 조퇴 0회" />
-        </div>
-        <div class="field">
-          <label>수업 태도</label>
-          <textarea id="f-att-attitude" placeholder="매우 좋음 (수업 내내 집중력이 좋고, ... )"></textarea>
-        </div>
-
-        <hr style="margin:10px 0; border:none; border-top:1px dashed #e5e7eb;" />
-
-        <div class="field">
-          <label>단원 / 진도</label>
-          <input id="f-prog-unit" placeholder="수1 3단원 삼각함수" />
-        </div>
-        <div class="field">
-          <label>상세 진도</label>
-          <textarea id="f-prog-detail" placeholder="3.1~3.3(삼각함수의 그래프, 주기·진폭) 개념 정리 및 유형별 문제 풀이"></textarea>
-        </div>
-        <div class="field">
-          <label>이해도</label>
-          <textarea id="f-prog-under" placeholder="개념은 전반적으로 이해하였으나, ..."></textarea>
-        </div>
-
-        <hr style="margin:10px 0; border:none; border-top:1px dashed #e5e7eb;" />
-
-        <div class="field">
-          <label>숙제 분량</label>
-          <input id="f-hw-amount" placeholder="연습모드 p.45~52, 총 32문제" />
-        </div>
-        <div class="field">
-          <label>제출 여부</label>
-          <input id="f-hw-sub" placeholder="제시간 제출" />
-        </div>
-        <div class="field">
-          <label>수행률</label>
-          <input id="f-hw-comp" placeholder="100% (32/32)" />
-        </div>
-        <div class="field">
-          <label>정답률</label>
-          <input id="f-hw-corr" placeholder="84% (27/32)" />
-        </div>
-        <div class="field">
-          <label>숙제 코멘트</label>
-          <textarea id="f-hw-comment" placeholder="양은 모두 채웠으나, ..."></textarea>
-        </div>
-
-        <hr style="margin:10px 0; border:none; border-top:1px dashed #e5e7eb;" />
-
-        <div class="field">
-          <label>테스트 종류</label>
-          <input id="f-test-type" placeholder="삼각함수 소단원 테스트" />
-        </div>
-        <div class="field">
-          <label>시험 일자</label>
-          <input id="f-test-date" placeholder="2025-11-14" />
-        </div>
-        <div class="field">
-          <label>점수 / 만점 / 반 평균 / 위치</label>
-          <input id="f-test-score" placeholder="84 / 100 / 76 / 상위권" />
-        </div>
-        <div class="field">
-          <label>테스트 해석</label>
-          <textarea id="f-test-analysis" placeholder="기본 개념 문제는 안정적으로 해결하나, ..."></textarea>
-        </div>
-
-        <hr style="margin:10px 0; border:none; border-top:1px dashed #e5e7eb;" />
-
-        <div class="field">
-          <label>코멘트 요약</label>
-          <textarea id="f-com-summary" placeholder="집중력과 태도는 안정적이며, ..."></textarea>
-        </div>
-        <div class="field">
-          <label>잘한 점</label>
-          <textarea id="f-com-good"></textarea>
-        </div>
-        <div class="field">
-          <label>보완이 필요한 부분</label>
-          <textarea id="f-com-need"></textarea>
-        </div>
-        <div class="field">
-          <label>다음 주 계획</label>
-          <textarea id="f-com-plan"></textarea>
-        </div>
-
-        <button class="btn" id="make-json-btn">JSON 만들기</button>
-        <div class="status" id="msg"></div>
-      </div>
-
-      <div class="card">
-        <h2>결과 JSON (data/학생ID.json)</h2>
-        <textarea id="output" class="output" spellcheck="false"></textarea>
-        <button class="btn" id="download-btn">파일로 다운로드 (.json)</button>
-      </div>
-    </div>
+    <button class="btn" id="btn-login">접속</button>
+    <div id="login-msg" class="status err"></div>
   </div>
 
-  <script>
-    function makeJson() {
-      const id = document.getElementById('f-id').value.trim();
-      const name = document.getElementById('f-name').value.trim();
-      if (!id || !name) {
-        document.getElementById('msg').textContent = '학생 ID와 이름은 필수입니다.';
+  <!-- 실제 관리자 화면 -->
+  <div id="admin-view" class="hidden">
+    <div class="badge">ADMIN</div>
+    <h1>RTM 주간보고 관리자 도구</h1>
+    <div class="subtitle">
+      학생 목록 관리 · 주간 JSON 생성 · 일괄 템플릿 생성 등을 한 곳에서 처리합니다.
+      <span class="tag">data/students.json · data/학생ID.json</span>
+    </div>
+
+    <!-- 1. 학생 목록 관리 -->
+    <div class="card">
+      <h2>1. 학생 목록 관리 (students.json)</h2>
+      <div class="grid-2">
+        <div>
+          <h3>학생 정보 입력 / 수정</h3>
+          <div class="field">
+            <label>학생 ID (파일명, 영어/숫자)</label>
+            <input id="st-id" placeholder="예: hong, leechahoon" />
+            <small>보고서 URL: ?student=<strong>이 값</strong> / 파일명: data/<strong>이 값</strong>.json</small>
+          </div>
+          <div class="field">
+            <label>학생 이름</label>
+            <input id="st-name" placeholder="예: 홍길동" />
+          </div>
+          <div class="field">
+            <label>학년/반</label>
+            <input id="st-grade" placeholder="예: 고2, 중3-1반" />
+          </div>
+          <div class="field">
+            <label>과목</label>
+            <input id="st-subject" value="수학" />
+          </div>
+
+          <button class="btn" id="btn-add-update-student">학생 추가 / 수정</button>
+          <button class="btn danger small" id="btn-delete-student">선택 학생 삭제</button>
+          <div id="student-msg" class="status"></div>
+
+          <h3 style="margin-top:14px;">학생 선택</h3>
+          <div class="field">
+            <label>학생 선택 (위 목록에서 불러오기)</label>
+            <select id="st-select"></select>
+          </div>
+          <button class="btn secondary small" id="btn-load-student">학생 정보 불러오기</button>
+        </div>
+
+        <div>
+          <h3>현재 students.json (정렬된 상태)</h3>
+          <textarea id="students-json" class="output" spellcheck="false"></textarea>
+          <button class="btn small" id="btn-download-students">students.json 다운로드</button>
+          <div id="students-msg" class="status ok"></div>
+        </div>
+      </div>
+
+      <h3>학생 목록 (클릭해서 선택)</h3>
+      <table id="students-table">
+        <thead>
+          <tr>
+            <th data-sort="id">ID</th>
+            <th data-sort="name">이름</th>
+            <th data-sort="grade">학년</th>
+            <th data-sort="subject">과목</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <!-- 2. 개별 학생 주간 JSON 생성/수정 -->
+    <div class="card">
+      <h2>2. 개별 학생 주간 JSON 생성 / 수정</h2>
+      <div class="grid-2">
+        <div>
+          <h3>기본 정보</h3>
+          <div class="field">
+            <label>학생 ID (위와 동일)</label>
+            <input id="rep-id" placeholder="예: hong" />
+          </div>
+          <div class="field">
+            <label>학생 이름</label>
+            <input id="rep-name" placeholder="예: 홍길동" />
+          </div>
+          <div class="field">
+            <label>학년/반</label>
+            <input id="rep-grade" placeholder="예: 고2" />
+          </div>
+          <div class="field">
+            <label>주차</label>
+            <input id="rep-week" placeholder="예: 2025년 11월 3주차" />
+          </div>
+          <div class="field">
+            <label>과목</label>
+            <input id="rep-subject" value="수학" />
+          </div>
+
+          <h3>출결</h3>
+          <div class="field">
+            <label>이번 주 수업일 수</label>
+            <input id="rep-att-total" placeholder="예: 3" />
+          </div>
+          <div class="grid-3">
+            <div class="field">
+              <label>결석</label>
+              <input id="rep-att-absent" placeholder="0" />
+            </div>
+            <div class="field">
+              <label>지각</label>
+              <input id="rep-att-late" placeholder="0" />
+            </div>
+            <div class="field">
+              <label>조퇴</label>
+              <input id="rep-att-early" placeholder="0" />
+            </div>
+          </div>
+          <div class="field">
+            <label>수업 태도</label>
+            <textarea id="rep-att-attitude" placeholder="매우 좋음 (수업 내내 집중력이 좋고, …)"></textarea>
+          </div>
+
+          <h3>단원 / 진도</h3>
+          <div class="field">
+            <label>단원</label>
+            <input id="rep-prog-unit" placeholder="예: 수1 3단원 삼각함수" />
+          </div>
+          <div class="field">
+            <label>상세 진도</label>
+            <textarea id="rep-prog-detail" placeholder="예: 3.1~3.3 개념 정리 및 유형별 문제 풀이"></textarea>
+          </div>
+          <div class="field">
+            <label>이해도</label>
+            <textarea id="rep-prog-under" placeholder="예: 개념은 전반적으로 이해하였으나, …"></textarea>
+          </div>
+        </div>
+
+        <div>
+          <h3>숙제 / 테스트 / 종합 코멘트</h3>
+          <div class="field">
+            <label>숙제 분량</label>
+            <input id="rep-hw-amount" placeholder="예: 연습모드 p.45~52, 총 32문제" />
+          </div>
+          <div class="field">
+            <label>숙제 제출 여부</label>
+            <input id="rep-hw-sub" placeholder="예: 제시간 제출" />
+          </div>
+          <div class="field">
+            <label>숙제 수행률</label>
+            <input id="rep-hw-comp" placeholder="예: 100% (32/32)" />
+          </div>
+          <div class="field">
+            <label>숙제 정답률</label>
+            <input id="rep-hw-corr" placeholder="예: 84% (27/32)" />
+          </div>
+          <div class="field">
+            <label>숙제 코멘트</label>
+            <textarea id="rep-hw-comment" placeholder="예: 양은 모두 채웠으나, …"></textarea>
+          </div>
+
+          <h3>테스트</h3>
+          <div class="field">
+            <label>테스트 종류</label>
+            <input id="rep-test-type" placeholder="예: 삼각함수 소단원 테스트" />
+          </div>
+          <div class="field">
+            <label>시험 일자</label>
+            <input id="rep-test-date" placeholder="예: 2025-11-14" />
+          </div>
+          <div class="grid-3">
+            <div class="field">
+              <label>점수</label>
+              <input id="rep-test-score" placeholder="84" />
+            </div>
+            <div class="field">
+              <label>만점</label>
+              <input id="rep-test-total" placeholder="100" />
+            </div>
+            <div class="field">
+              <label>반 평균</label>
+              <input id="rep-test-avg" placeholder="76" />
+            </div>
+          </div>
+          <div class="field">
+            <label>상대 위치</label>
+            <input id="rep-test-rank" placeholder="예: 상위권" />
+          </div>
+          <div class="field">
+            <label>테스트 해석</label>
+            <textarea id="rep-test-analysis" placeholder="예: 기본 개념 문제는 안정적으로 해결하나, …"></textarea>
+          </div>
+
+          <h3>종합 코멘트</h3>
+          <div class="field">
+            <label>요약</label>
+            <textarea id="rep-com-summary" placeholder="예: 집중력과 태도는 안정적이며, …"></textarea>
+          </div>
+          <div class="field">
+            <label>잘한 점</label>
+            <textarea id="rep-com-good"></textarea>
+          </div>
+          <div class="field">
+            <label>보완이 필요한 부분</label>
+            <textarea id="rep-com-need"></textarea>
+          </div>
+          <div class="field">
+            <label>다음 주 계획</label>
+            <textarea id="rep-com-plan"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <button class="btn small" id="btn-load-existing-json">선택 학생 기존 JSON 불러오기</button>
+        <button class="btn secondary small" id="btn-fill-template">예시 템플릿 채우기</button>
+        <button class="btn small" id="btn-make-json">JSON 생성</button>
+        <button class="btn small" id="btn-download-json">이 학생 JSON 다운로드</button>
+        <div id="rep-msg" class="status"></div>
+        <textarea id="rep-output" class="output" spellcheck="false" placeholder="여기에 data/학생ID.json 내용이 생성됩니다."></textarea>
+      </div>
+    </div>
+
+    <!-- 3. 일괄 템플릿 생성 -->
+    <div class="card">
+      <h2>3. 여러 학생 한 번에 이번 주 템플릿 만들기</h2>
+      <div class="grid-2">
+        <div>
+          <div class="field">
+            <label>이번 주차</label>
+            <input id="bulk-week" placeholder="예: 2025년 11월 4주차" />
+          </div>
+          <div class="field">
+            <label>기본 과목</label>
+            <input id="bulk-subject" value="수학" />
+          </div>
+          <div class="field">
+            <label>템플릿 넣을 학생 ID 목록 (한 줄에 하나씩)</label>
+            <textarea id="bulk-ids" placeholder="예:
+hong
+leechahoon"></textarea>
+            <small>※ students.json에 존재하는 학생 ID만 유효합니다.</small>
+          </div>
+          <button class="btn" id="btn-bulk-generate">모든 학생용 기본 JSON 파일 다운로드</button>
+          <div id="bulk-msg" class="status"></div>
+        </div>
+        <div>
+          <p style="font-size:13px; color:#4b5563; margin-top:4px;">
+            이 기능은 “이번 주는 아직 코멘트 안 쓴 상태에서,  
+            <strong>틀만 먼저 만들어 두고 싶은 경우</strong>”에 사용합니다.
+          </p>
+          <ul style="font-size:13px; color:#4b5563; padding-left:18px; margin-top:6px;">
+            <li>위 칸에 학생 ID를 여러 개 넣고 버튼을 누르면</li>
+            <li>각각 <code>id.json</code> 파일이 자동으로 다운로드됩니다.</li>
+            <li>필요한 파일만 골라서 GitHub data 폴더에 업로드하면 됩니다.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>4. 안내</h2>
+      <p style="font-size:13px; color:#4b5563;">
+        - 이 페이지에서 만들어진 JSON은 <code>data/학생ID.json</code> 파일로 GitHub에 올려야 실제 보고서에 반영됩니다.<br/>
+        - students.json 역시 수정 후 다운로드 → <code>data/students.json</code> 파일로 교체해 주세요.<br/>
+        - GitHub Pages 특성상, 반영까지는 수 초~수십 초 정도 지연될 수 있습니다. (Ctrl + F5 새로고침 권장)
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ===== 설정 =====
+  const ADMIN_PIN = "2857"; // 네가 원하는 값으로 바꿔라
+
+  const state = {
+    students: [],
+    sortKey: "name",
+    sortAsc: true
+  };
+
+  function $(id) { return document.getElementById(id); }
+
+  function show(el, flag) {
+    if (flag) el.classList.remove("hidden");
+    else el.classList.add("hidden");
+  }
+
+  function renderStudents() {
+    // 정렬
+    state.students.sort((a, b) => {
+      const key = state.sortKey;
+      const va = (a[key] || "").toString().toLowerCase();
+      const vb = (b[key] || "").toString().toLowerCase();
+      if (va < vb) return state.sortAsc ? -1 : 1;
+      if (va > vb) return state.sortAsc ? 1 : -1;
+      return 0;
+    });
+
+    // select
+    const sel = $("st-select");
+    sel.innerHTML = "";
+    const opt0 = document.createElement("option");
+    opt0.value = "";
+    opt0.textContent = "학생을 선택하세요";
+    sel.appendChild(opt0);
+    state.students.forEach(s => {
+      const opt = document.createElement("option");
+      opt.value = s.id;
+      opt.textContent = `${s.grade || ""} ${s.name || ""}`.trim() || s.id;
+      sel.appendChild(opt);
+    });
+
+    // table
+    const tbody = $("students-table").querySelector("tbody");
+    tbody.innerHTML = "";
+    state.students.forEach(s => {
+      const tr = document.createElement("tr");
+      tr.dataset.id = s.id;
+
+      const tdId = document.createElement("td");
+      tdId.textContent = s.id || "";
+      const tdName = document.createElement("td");
+      tdName.textContent = s.name || "";
+      const tdGrade = document.createElement("td");
+      tdGrade.textContent = s.grade || "";
+      const tdSub = document.createElement("td");
+      tdSub.textContent = s.subject || "";
+
+      tr.appendChild(tdId);
+      tr.appendChild(tdName);
+      tr.appendChild(tdGrade);
+      tr.appendChild(tdSub);
+
+      tr.addEventListener("click", () => {
+        $("st-id").value = s.id || "";
+        $("st-name").value = s.name || "";
+        $("st-grade").value = s.grade || "";
+        $("st-subject").value = s.subject || "";
+        $("rep-id").value = s.id || "";
+        $("rep-name").value = s.name || "";
+        $("rep-grade").value = s.grade || "";
+        $("rep-subject").value = s.subject || "수학";
+      });
+
+      tbody.appendChild(tr);
+    });
+
+    // students.json textarea
+    $("students-json").value = JSON.stringify(state.students, null, 2);
+    $("students-msg").textContent = "수정 후 이 내용을 data/students.json 파일로 교체하면 됩니다.";
+  }
+
+  async function loadStudentsJson() {
+    try {
+      const res = await fetch("data/students.json");
+      if (!res.ok) {
+        $("students-msg").textContent = "data/students.json 을 불러올 수 없습니다. (처음이면 없는 게 정상일 수 있습니다.)";
         return;
       }
+      const list = await res.json();
+      if (!Array.isArray(list)) {
+        $("students-msg").textContent = "students.json 형식이 배열이 아닙니다.";
+        return;
+      }
+      state.students = list;
+      renderStudents();
+      $("students-msg").textContent = "students.json 로딩 완료.";
+      $("students-msg").className = "status ok";
+    } catch (e) {
+      console.error(e);
+      $("students-msg").textContent = "students.json 로딩 중 오류 발생.";
+      $("students-msg").className = "status err";
+    }
+  }
 
+  function addOrUpdateStudent() {
+    const id = $("st-id").value.trim();
+    const name = $("st-name").value.trim();
+    const grade = $("st-grade").value.trim();
+    const subject = $("st-subject").value.trim() || "수학";
+
+    if (!id || !name) {
+      $("student-msg").textContent = "학생 ID와 이름은 필수입니다.";
+      $("student-msg").className = "status err";
+      return;
+    }
+    const idx = state.students.findIndex(s => s.id === id);
+    if (idx >= 0) {
+      state.students[idx] = { id, name, grade, subject };
+      $("student-msg").textContent = "기존 학생 정보를 수정했습니다.";
+    } else {
+      state.students.push({ id, name, grade, subject });
+      $("student-msg").textContent = "새 학생을 추가했습니다.";
+    }
+    $("student-msg").className = "status ok";
+    renderStudents();
+  }
+
+  function deleteStudent() {
+    const id = $("st-id").value.trim() || $("st-select").value;
+    if (!id) {
+      $("student-msg").textContent = "삭제할 학생을 선택하거나 ID를 입력해 주세요.";
+      $("student-msg").className = "status err";
+      return;
+    }
+    const idx = state.students.findIndex(s => s.id === id);
+    if (idx === -1) {
+      $("student-msg").textContent = "students.json에서 해당 ID를 찾을 수 없습니다.";
+      $("student-msg").className = "status err";
+      return;
+    }
+    if (!confirm(`정말로 학생(ID: ${id})을 목록에서 삭제할까요? 이 작업은 되돌릴 수 없습니다.`)) return;
+    state.students.splice(idx, 1);
+    $("student-msg").textContent = "학생을 목록에서 삭제했습니다. (students.json도 교체해 주세요)";
+    $("student-msg").className = "status ok";
+    renderStudents();
+  }
+
+  function downloadTextFile(filename, text) {
+    const blob = new Blob([text], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function downloadStudentsJson() {
+    const txt = $("students-json").value;
+    downloadTextFile("students.json", txt);
+  }
+
+  function loadStudentIntoForm() {
+    const id = $("st-select").value;
+    if (!id) return;
+    const s = state.students.find(x => x.id === id);
+    if (!s) return;
+    $("st-id").value = s.id || "";
+    $("st-name").value = s.name || "";
+    $("st-grade").value = s.grade || "";
+    $("st-subject").value = s.subject || "";
+    $("rep-id").value = s.id || "";
+    $("rep-name").value = s.name || "";
+    $("rep-grade").value = s.grade || "";
+    $("rep-subject").value = s.subject || "수학";
+    $("student-msg").textContent = "학생 정보를 불러왔습니다.";
+    $("student-msg").className = "status ok";
+  }
+
+  function fillTemplateExample() {
+    $("rep-week").value = $("rep-week").value || "2025년 11월 3주차";
+    $("rep-att-total").value = $("rep-att-total").value || "3";
+    $("rep-att-absent").value = $("rep-att-absent").value || "0";
+    $("rep-att-late").value = $("rep-att-late").value || "0";
+    $("rep-att-early").value = $("rep-att-early").value || "0";
+    $("rep-att-attitude").value = $("rep-att-attitude").value || "매우 좋음 (수업 내내 집중력이 좋고, 모르는 부분은 바로 질문하는 편입니다.)";
+
+    $("rep-prog-unit").value = $("rep-prog-unit").value || "수1 3단원 삼각함수";
+    $("rep-prog-detail").value = $("rep-prog-detail").value ||
+      "3.1~3.3(삼각함수의 그래프, 주기·진폭) 개념 정리 및 유형별 문제 풀이";
+    $("rep-prog-under").value = $("rep-prog-under").value ||
+      "개념은 전반적으로 이해하였으나, 고난도 문제 적용 시 약간의 추가 연습이 필요합니다.";
+
+    $("rep-hw-amount").value = $("rep-hw-amount").value || "연습모드 p.45~52, 총 32문제";
+    $("rep-hw-sub").value = $("rep-hw-sub").value || "제시간 제출";
+    $("rep-hw-comp").value = $("rep-hw-comp").value || "100% (32/32)";
+    $("rep-hw-corr").value = $("rep-hw-corr").value || "84% (27/32)";
+    $("rep-hw-comment").value = $("rep-hw-comment").value ||
+      "양은 모두 채웠으나, 부등식 부호·계산 과정에서의 실수가 반복되어 검산 습관이 필요합니다.";
+
+    $("rep-test-type").value = $("rep-test-type").value || "삼각함수 소단원 테스트";
+    $("rep-test-date").value = $("rep-test-date").value || "2025-11-14";
+    $("rep-test-score").value = $("rep-test-score").value || "84";
+    $("rep-test-total").value = $("rep-test-total").value || "100";
+    $("rep-test-avg").value = $("rep-test-avg").value || "76";
+    $("rep-test-rank").value = $("rep-test-rank").value || "상위권";
+    $("rep-test-analysis").value = $("rep-test-analysis").value ||
+      "기본 개념 문제는 안정적으로 해결하나, 서술형 고난도 문항에서 풀이를 끝까지 쓰지 않아 감점이 발생했습니다.";
+
+    $("rep-com-summary").value = $("rep-com-summary").value ||
+      "집중력과 태도는 안정적이며, 계산 실수만 줄이면 상위권 성적을 유지할 수 있는 학생입니다.";
+    $("rep-com-good").value = $("rep-com-good").value ||
+      "수업 태도가 안정적이고, 모르는 부분을 바로 질문하려는 태도가 매우 좋습니다.";
+    $("rep-com-need").value = $("rep-com-need").value ||
+      "계산·부호 실수가 반복되어, 문제를 다 푼 뒤 마지막에 한 번 더 검산하는 습관이 필요합니다.";
+    $("rep-com-plan").value = $("rep-com-plan").value ||
+      "삼각함수 서술형·고난도 문제를 중심으로 최근 틀린 문항을 다시 풀려보며, 실수를 줄이는 방향으로 수업을 진행하겠습니다.";
+
+    $("rep-msg").textContent = "예시 템플릿을 기본값으로 채웠습니다. 필요한 부분만 수정하세요.";
+    $("rep-msg").className = "status ok";
+  }
+
+  function makeReportJson() {
+    const id = $("rep-id").value.trim();
+    const name = $("rep-name").value.trim();
+    if (!id || !name) {
+      $("rep-msg").textContent = "학생 ID와 학생 이름은 필수입니다.";
+      $("rep-msg").className = "status err";
+      return;
+    }
+    const data = {
+      studentName: name,
+      grade: $("rep-grade").value.trim() || "",
+      week: $("rep-week").value.trim() || "",
+      subject: $("rep-subject").value.trim() || "수학",
+      attendance: {
+        totalClasses: $("rep-att-total").value.trim() || "",
+        absent: $("rep-att-absent").value.trim() || "",
+        late: $("rep-att-late").value.trim() || "",
+        earlyLeave: $("rep-att-early").value.trim() || "",
+        attitude: $("rep-att-attitude").value.trim() || ""
+      },
+      progress: {
+        unit: $("rep-prog-unit").value.trim() || "",
+        detail: $("rep-prog-detail").value.trim() || "",
+        understanding: $("rep-prog-under").value.trim() || ""
+      },
+      homework: {
+        amount: $("rep-hw-amount").value.trim() || "",
+        submission: $("rep-hw-sub").value.trim() || "",
+        completion: $("rep-hw-comp").value.trim() || "",
+        correct: $("rep-hw-corr").value.trim() || "",
+        comment: $("rep-hw-comment").value.trim() || ""
+      },
+      test: {
+        type: $("rep-test-type").value.trim() || "",
+        date: $("rep-test-date").value.trim() || "",
+        score: $("rep-test-score").value.trim() || "",
+        total: $("rep-test-total").value.trim() || "",
+        classAverage: $("rep-test-avg").value.trim() || "",
+        rank: $("rep-test-rank").value.trim() || "",
+        analysis: $("rep-test-analysis").value.trim() || ""
+      },
+      comment: {
+        summary: $("rep-com-summary").value.trim() || "",
+        good: $("rep-com-good").value.trim() || "",
+        need: $("rep-com-need").value.trim() || "",
+        plan: $("rep-com-plan").value.trim() || ""
+      }
+    };
+    const txt = JSON.stringify(data, null, 2);
+    $("rep-output").value = txt;
+    $("rep-msg").textContent = `완성! data/${id}.json 에 이 내용을 넣으면 됩니다.`;
+    $("rep-msg").className = "status ok";
+  }
+
+  async function loadExistingJson() {
+    const id = $("rep-id").value.trim();
+    if (!id) {
+      $("rep-msg").textContent = "먼저 학생 ID를 입력해 주세요.";
+      $("rep-msg").className = "status err";
+      return;
+    }
+    try {
+      const res = await fetch(`data/${id}.json`);
+      if (!res.ok) {
+        $("rep-msg").textContent = `data/${id}.json 을 불러올 수 없습니다.`;
+        $("rep-msg").className = "status err";
+        return;
+      }
+      const d = await res.json();
+      $("rep-name").value = d.studentName || "";
+      $("rep-grade").value = d.grade || "";
+      $("rep-week").value = d.week || "";
+      $("rep-subject").value = d.subject || "수학";
+
+      $("rep-att-total").value = d.attendance?.totalClasses || "";
+      $("rep-att-absent").value = d.attendance?.absent || "";
+      $("rep-att-late").value = d.attendance?.late || "";
+      $("rep-att-early").value = d.attendance?.earlyLeave || "";
+      $("rep-att-attitude").value = d.attendance?.attitude || "";
+
+      $("rep-prog-unit").value = d.progress?.unit || "";
+      $("rep-prog-detail").value = d.progress?.detail || "";
+      $("rep-prog-under").value = d.progress?.understanding || "";
+
+      $("rep-hw-amount").value = d.homework?.amount || "";
+      $("rep-hw-sub").value = d.homework?.submission || "";
+      $("rep-hw-comp").value = d.homework?.completion || "";
+      $("rep-hw-corr").value = d.homework?.correct || "";
+      $("rep-hw-comment").value = d.homework?.comment || "";
+
+      $("rep-test-type").value = d.test?.type || "";
+      $("rep-test-date").value = d.test?.date || "";
+      $("rep-test-score").value = d.test?.score || "";
+      $("rep-test-total").value = d.test?.total || "";
+      $("rep-test-avg").value = d.test?.classAverage || "";
+      $("rep-test-rank").value = d.test?.rank || "";
+      $("rep-test-analysis").value = d.test?.analysis || "";
+
+      $("rep-com-summary").value = d.comment?.summary || "";
+      $("rep-com-good").value = d.comment?.good || "";
+      $("rep-com-need").value = d.comment?.need || "";
+      $("rep-com-plan").value = d.comment?.plan || "";
+
+      $("rep-output").value = JSON.stringify(d, null, 2);
+      $("rep-msg").textContent = `data/${id}.json 내용을 불러왔습니다. 수정 후 다시 JSON 생성 / 다운로드해 주세요.`;
+      $("rep-msg").className = "status ok";
+    } catch (e) {
+      console.error(e);
+      $("rep-msg").textContent = "기존 JSON 로딩 중 오류가 발생했습니다.";
+      $("rep-msg").className = "status err";
+    }
+  }
+
+  function downloadReportJson() {
+    const id = $("rep-id").value.trim();
+    const txt = $("rep-output").value.trim();
+    if (!id || !txt) {
+      $("rep-msg").textContent = "먼저 JSON을 생성한 뒤 다운로드할 수 있습니다.";
+      $("rep-msg").className = "status err";
+      return;
+    }
+    downloadTextFile(`${id}.json`, txt);
+    $("rep-msg").textContent = `${id}.json 파일을 다운로드했습니다. GitHub data 폴더에 업로드해 주세요.`;
+    $("rep-msg").className = "status ok";
+  }
+
+  function bulkGenerate() {
+    const week = $("bulk-week").value.trim();
+    const subject = $("bulk-subject").value.trim() || "수학";
+    const idsRaw = $("bulk-ids").value.trim();
+    if (!week || !idsRaw) {
+      $("bulk-msg").textContent = "주차와 학생 ID 목록을 입력해 주세요.";
+      $("bulk-msg").className = "status err";
+      return;
+    }
+    const ids = idsRaw.split("\n").map(s => s.trim()).filter(Boolean);
+    if (!ids.length) {
+      $("bulk-msg").textContent = "유효한 ID가 없습니다.";
+      $("bulk-msg").className = "status err";
+      return;
+    }
+
+    let notFound = [];
+    ids.forEach(id => {
+      const s = state.students.find(x => x.id === id);
+      if (!s) {
+        notFound.push(id);
+        return;
+      }
       const data = {
-        studentName: name,
-        grade: document.getElementById('f-grade').value.trim() || "",
-        week: document.getElementById('f-week').value.trim() || "",
-        subject: document.getElementById('f-subject').value.trim() || "수학",
+        studentName: s.name || id,
+        grade: s.grade || "",
+        week,
+        subject,
         attendance: {
-          totalClasses: document.getElementById('f-att-total').value.trim() || "",
+          totalClasses: "",
           absent: "",
           late: "",
           earlyLeave: "",
-          attitude: document.getElementById('f-att-attitude').value.trim() || ""
+          attitude: ""
         },
         progress: {
-          unit: document.getElementById('f-prog-unit').value.trim() || "",
-          detail: document.getElementById('f-prog-detail').value.trim() || "",
-          understanding: document.getElementById('f-prog-under').value.trim() || ""
+          unit: "",
+          detail: "",
+          understanding: ""
         },
         homework: {
-          amount: document.getElementById('f-hw-amount').value.trim() || "",
-          submission: document.getElementById('f-hw-sub').value.trim() || "",
-          completion: document.getElementById('f-hw-comp').value.trim() || "",
-          correct: document.getElementById('f-hw-corr').value.trim() || "",
-          comment: document.getElementById('f-hw-comment').value.trim() || ""
+          amount: "",
+          submission: "",
+          completion: "",
+          correct: "",
+          comment: ""
         },
         test: {
-          type: document.getElementById('f-test-type').value.trim() || "",
-          date: document.getElementById('f-test-date').value.trim() || "",
+          type: "",
+          date: "",
           score: "",
           total: "",
           classAverage: "",
           rank: "",
-          analysis: document.getElementById('f-test-analysis').value.trim() || ""
+          analysis: ""
         },
         comment: {
-          summary: document.getElementById('f-com-summary').value.trim() || "",
-          good: document.getElementById('f-com-good').value.trim() || "",
-          need: document.getElementById('f-com-need').value.trim() || "",
-          plan: document.getElementById('f-com-plan').value.trim() || ""
+          summary: "",
+          good: "",
+          need: "",
+          plan: ""
         }
       };
+      const txt = JSON.stringify(data, null, 2);
+      downloadTextFile(`${id}.json`, txt);
+    });
 
-      // 점수/만점/평균/위치 분리
-      const scoreLine = document.getElementById('f-test-score').value.trim();
-      if (scoreLine) {
-        const parts = scoreLine.split('/').map(s => s.trim());
-        if (parts[0]) data.test.score = parts[0];
-        if (parts[1]) data.test.total = parts[1];
-        if (parts[2]) data.test.classAverage = parts[2];
-        if (parts[3]) data.test.rank = parts[3];
-      }
-
-      const jsonText = JSON.stringify(data, null, 2);
-      document.getElementById('output').value = jsonText;
-      document.getElementById('msg').textContent =
-        '완성! data/' + id + '.json 에 붙여넣으면 됩니다.';
+    if (notFound.length) {
+      $("bulk-msg").textContent =
+        `완료. 단, students.json에 없는 ID: ${notFound.join(", ")}`;
+      $("bulk-msg").className = "status err";
+    } else {
+      $("bulk-msg").textContent = "모든 학생에 대해 기본 JSON 파일을 다운로드했습니다.";
+      $("bulk-msg").className = "status ok";
     }
+  }
 
-    function downloadJson() {
-      const id = document.getElementById('f-id').value.trim();
-      const txt = document.getElementById('output').value.trim();
-      if (!id || !txt) return;
+  function initSorting() {
+    const ths = $("students-table").querySelectorAll("th[data-sort]");
+    ths.forEach(th => {
+      th.addEventListener("click", () => {
+        const key = th.getAttribute("data-sort");
+        if (state.sortKey === key) {
+          state.sortAsc = !state.sortAsc;
+        } else {
+          state.sortKey = key;
+          state.sortAsc = true;
+        }
+        renderStudents();
+      });
+    });
+  }
 
-      const blob = new Blob([txt], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = id + '.json';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
+  function initAdmin() {
+    $("btn-add-update-student").addEventListener("click", addOrUpdateStudent);
+    $("btn-delete-student").addEventListener("click", deleteStudent);
+    $("btn-download-students").addEventListener("click", downloadStudentsJson);
+    $("btn-load-student").addEventListener("click", loadStudentIntoForm);
+
+    $("btn-fill-template").addEventListener("click", fillTemplateExample);
+    $("btn-make-json").addEventListener("click", makeReportJson);
+    $("btn-load-existing-json").addEventListener("click", loadExistingJson);
+    $("btn-download-json").addEventListener("click", downloadReportJson);
+
+    $("btn-bulk-generate").addEventListener("click", bulkGenerate);
+
+    initSorting();
+    loadStudentsJson();
+  }
+
+  // 로그인 처리
+  $("btn-login").addEventListener("click", () => {
+    const v = $("admin-pin").value.trim();
+    if (v === ADMIN_PIN) {
+      $("login-msg").textContent = "";
+      show($("login-view"), false);
+      show($("admin-view"), true);
+      initAdmin();
+    } else {
+      $("login-msg").textContent = "PIN이 올바르지 않습니다.";
     }
-
-    document.getElementById('make-json-btn').addEventListener('click', makeJson);
-    document.getElementById('download-btn').addEventListener('click', downloadJson);
-  </script>
+  });
+</script>
 </body>
 </html>
