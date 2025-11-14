@@ -1,0 +1,14 @@
+[
+  {
+    "id": "hong",
+    "name": "홍길동",
+    "grade": "고2",
+    "subject": "수학"
+  },
+  {
+    "id": "leechahoon",
+    "name": "이채훈",
+    "grade": "중1",
+    "subject": "수학"
+  }
+]
