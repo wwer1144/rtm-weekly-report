@@ -1,0 +1,31 @@
+{
+  "studentName": "김강인",
+  "grade": "중1",
+  "subject": "수학",
+  "history": [
+    {
+      "week": "2025년 10월 4주차",
+      "homeworkRate": 80,
+      "testScore": 70,
+      "absent": 0,
+      "late": 1,
+      "earlyLeave": 0
+    },
+    {
+      "week": "2025년 11월 1주차",
+      "homeworkRate": 90,
+      "testScore": 78,
+      "absent": 0,
+      "late": 0,
+      "earlyLeave": 0
+    },
+    {
+      "week": "2025년 11월 2주차",
+      "homeworkRate": 100,
+      "testScore": 84,
+      "absent": 0,
+      "late": 0,
+      "earlyLeave": 0
+    }
+  ]
+}
